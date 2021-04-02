@@ -12,17 +12,23 @@ export default function App() {
     latitudeDelta: 0.01,
     longitudeDelta: 0.01
   });
+  const [initLocation, setInitLoc] = useState({
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01
+  });
 
   const [markers, setMarkers] = useState([])
   const [bounds, setBounds] = useState(null)
-  const [ref, setRef] = useState(null)
+  const [mref, setRef] = useState(null)
 
   useEffect(() => {
     (async () => {
       let status = await Location.requestPermissionsAsync();
       console.log(status)
       if (status !== 'granted') {
-        setModalVisible(true)
+        setModalVisible(false)
       }
 
       let location = await Location.getCurrentPositionAsync({});
@@ -32,25 +38,64 @@ export default function App() {
         latitudeDelta: 0.01,
         longitudeDelta: 0.01
       })
-      console.log(bounds)
+      
       
 
     })()
   }, [])
-  let mapref = null
+
+  let fetchReports = async(swlat, swlong, nelat, nelong) => {
+    // 192.168.0.104:3000/georeports?SWlat=${swlat}&SWlong=${swlong}&NElat=${nelat}&NElong=${nelong}
+    let response = await fetch(`192.168.0.104:3000`, {  
+                    method: 'GET',
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'x-access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjExNWJmMDA1LTFkOTQtNGJkNy1hNjgxLTdkN2U2YjllYzdjNSIsImlhdCI6MTYxNzI3NzE0MiwiZXhwIjoxNjE3MzYzNTQyfQ.2efKwqp5GbqAnpd-3t1KcEYbZ06PuKN33MBD4PAKRdo',
+                    },
+    }).then( data => {
+        console.log(data)
+    }
+        
+    ).catch((error) => {
+        console.log('Error:', error);
+      })
+  }
+
+  let onRegionChangeComplete = async () => {
+    let promis = await mref.getMapBoundaries()
+    if (promis.northEast.latitude < 1){
+        return
+    }
+    else {
+        let reports = await fetchReports(
+        promis.southWest.latitude, 
+        promis.southWest.longitude,
+        promis.northEast.latitude,
+        promis.northEast.longitude)
+        console.log(reports)
+    }
+    
+  }
+
   return (
      <View style={styles.centeredView}>
       <MapView style={styles.map}
-            loadingEnabled = {true}
             region={region}
             ref={(ref) => {
-                mapref = ref
+                setRef(ref)
              }}
+            onMapReady={()=>{
+                setInitLoc(region)
+                //console.log(mref.getMapBoundaries())
+            }}
             onRegionChangeComplete={region => {
                 setRegion(region)
-                setBounds(mapref.getMapBoundaries())
+                onRegionChangeComplete()
             }
-            }>
+            }
+            >
           {markers.map((marker, index) => (
             <Marker
             key={index}
