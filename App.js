@@ -21,6 +21,7 @@ export default function App() {
 
   const [markers, setMarkers] = useState([])
   const [bounds, setBounds] = useState(null)
+  const [response, setResponse] = useState(null)
   const [mref, setRef] = useState(null)
 
   useEffect(() => {
@@ -45,23 +46,51 @@ export default function App() {
   }, [])
 
   let fetchReports = async(swlat, swlong, nelat, nelong) => {
+    let url = `https://8ed49643a8a7.ngrok.io`
+    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjExNWJmMDA1LTFkOTQtNGJkNy1hNjgxLTdkN2U2YjllYzdjNSIsImlhdCI6MTYxNzQwMzIwOCwiZXhwIjoxNjE3NDg5NjA4fQ.WqfX6xAy3EhEwnosJ0BmjrStvGk1X69pbXNIcpYNaXk"
+   // let url = `192.168.0.104:3000`
     // 192.168.0.104:3000/georeports?SWlat=${swlat}&SWlong=${swlong}&NElat=${nelat}&NElong=${nelong}
-    let response = await fetch(`192.168.0.104:3000`, {  
+    return fetch(`${url}/georeports?SWlat=${swlat}&SWlong=${swlong}&NElat=${nelat}&NElong=${nelong}`, {  
                     method: 'GET',
-                    mode: 'cors',
                     headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'x-access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjExNWJmMDA1LTFkOTQtNGJkNy1hNjgxLTdkN2U2YjllYzdjNSIsImlhdCI6MTYxNzI3NzE0MiwiZXhwIjoxNjE3MzYzNTQyfQ.2efKwqp5GbqAnpd-3t1KcEYbZ06PuKN33MBD4PAKRdo',
+                        'x-access-token': token,
                     },
-    }).then( data => {
-        console.log(data)
-    }
-        
-    ).catch((error) => {
-        console.log('Error:', error);
-      })
+    }).then((response) => response.json())
+    .then((responseData) => {
+      //console.log(responseData)
+      return responseData
+    })
+    .catch(error => console.warn(error))
   }
+
+  let handleResponse = (response) => {
+    if (response.error == undefined){
+      //console.log(response.response.reports)
+      let colors = ["tomato","orange","yellow","gold",
+        "wheat","tan","linen","green", "blue", "navy",
+        "aqua / teal",  "turquoise", "violet",
+        "purple",  "plum", "indigo"]
+      arr = response.response.reports
+      let markers = []
+      for (let i = 0; i < arr.length; i++){
+        console.log(i)
+        markers.push({
+          latlng:{
+            latitude: parseFloat(arr[i].latitude),
+            longitude: parseFloat(arr[i].longitude)
+          },
+          clr: colors[Math.floor(Math.random() * colors.length)]
+        })
+      }
+      console.log(markers)
+      setMarkers(markers)
+    }
+    else{
+      console.log(response.error)
+    }
+      
+  }
+
 
   let onRegionChangeComplete = async () => {
     let promis = await mref.getMapBoundaries()
@@ -69,12 +98,12 @@ export default function App() {
         return
     }
     else {
-        let reports = await fetchReports(
+        fetchReports(
         promis.southWest.latitude, 
         promis.southWest.longitude,
         promis.northEast.latitude,
-        promis.northEast.longitude)
-        console.log(reports)
+        promis.northEast.longitude).then( r => handleResponse(r))
+        //console.log(reports)
     }
     
   }
@@ -100,8 +129,7 @@ export default function App() {
             <Marker
             key={index}
             coordinate={marker.latlng}
-            title={marker.title}
-            description={marker.description}
+            pinColor={marker.clr}
             />
         ))}      
 
@@ -187,4 +215,4 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center"
   }
-});
+})
