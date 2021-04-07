@@ -4,37 +4,14 @@ import { Button, View, Text, TextInput, StyleSheet, Dimensions, ActivityIndicato
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import Map from './Map.js'
-import { useEffect, useState } from 'react'
-import { FlatList } from 'react-native-gesture-handler'
-import MapView from 'react-native-maps'
-
 import Details from './Details.js'
+import CreateReport from './CreateReport.js'
+import WeatherPicker from './WeatherPicker.js'
 
 
-function CreateReport({ navigation, route }) {
 
-  const [postText, setPostText] = React.useState('');
-  return (
-    <>
-      <TextInput
-        multiline
-        placeholder="What's on your mind?"
-        style={{ height: 200, padding: 10, backgroundColor: 'white' }}
-        value={postText}
-        onChangeText={setPostText}
-      />
-      <Button
-        title="Done"
-        onPress={() => {
-          // Pass params back to home screen
-          navigation.navigate('Home', { post: postText })
-        }}
-      />
-    </>
-  );
-}
 
-function HomeScreen({route, navigation}) {
+const HomeScreen = ({route, navigation}) => {
   React.useEffect(() => {
     if (route.params?.post) {
       // Post updated, do something with `route.params.post`
@@ -57,7 +34,7 @@ function HomeScreen({route, navigation}) {
 
 const Stack = createStackNavigator();
 
-function App() {
+const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -73,6 +50,7 @@ function App() {
                      }} />
       <Stack.Screen name="Details" component={Details} />
       <Stack.Screen name="CreateReport" component={CreateReport} />
+      <Stack.Screen name="WeatherPicker" component={WeatherPicker}  options={{ title: 'Pick a weather situation' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
