@@ -3,6 +3,7 @@ import * as React from 'react'
 import {  View, Text, StyleSheet, Dimensions, ActivityIndicator, FlatList, ScrollView, SafeAreaView } from 'react-native'
 import { useEffect, useState } from 'react'
 import MapView, { Marker } from 'react-native-maps'
+import {fetchWholeReport} from './API.js'
 
 
 const Details = ({route, navigation}) => {
@@ -12,57 +13,46 @@ const Details = ({route, navigation}) => {
     const [marker, setMarker] = useState(null)
     report_id = route.params?.marker.report_id
     useEffect(() => { 
-      (async () => {
-          let url = "http://e330590adce4.ngrok.io"
-          let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjExNWJmMDA1LTFkOTQtNGJkNy1hNjgxLTdkN2U2YjllYzdjNSIsImlhdCI6MTYxNzc4NDQyMCwiZXhwIjoxNjE3ODcwODIwfQ.x_HyooHzwhC3s2a1c4OD6NrNjxlMVsvsZD6azw4wVuc"
-       
-         fetch(`${url}/report/${report_id}`, {  
-                          method: 'GET',
-                          headers: {
-                              'x-access-token': token,
-                          },
-          }).then((response) => response.json())
-          .then((responseData) => {
-            if(responseData.response.report !== undefined) {
-              
-              let report = responseData.response.report
-              let array = [
-                {
-                  title: "Weather type",
-                  value: report.characteristic
-                },
-                {
-                  title: "Location",
-                  value: report.location
-                },
-                {
-                  title: "Description",
-                  value: report.description
-                },
-                {
-                  title: "Time of submission",
-                  value: report.uploadtime
-                },
-                {
-                  title: "Photo",
-                  value: "bude dobre"
-                },
-              ]
-            setMarker({
-              latitude: report.latitude,
-              longitude: report.longitude
-            })
-            setIsLoading(false)
-            setReport(array)
-            }
-            else if(responseData.response.error) {
-              setError(true)
-              setIsLoading(false)
-            }
+        fetchWholeReport().then((responseData) =>{
+          if(responseData.response.report !== undefined) {
+            
+            let report = responseData.response.report
+            let array = [
+              {
+                title: "Weather type",
+                value: report.characteristic
+              },
+              {
+                title: "Location",
+                value: report.location
+              },
+              {
+                title: "Description",
+                value: report.description
+              },
+              {
+                title: "Time of submission",
+                value: report.uploadtime
+              },
+              {
+                title: "Photo",
+                value: "bude dobre"
+              },
+            ]
+          setMarker({
+            latitude: report.latitude,
+            longitude: report.longitude
           })
-          .catch(error => setError(error))
-        })()
-      
+          setIsLoading(false)
+          setReport(array)
+          }
+          else if(responseData.response.error) {
+            setError(true)
+            setIsLoading(false)
+          }
+
+        })
+  
     }, [])
   
     

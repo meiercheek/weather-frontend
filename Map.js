@@ -4,6 +4,7 @@ import { Alert, Modal, Pressable, Button,ActivityIndicator,
     StyleSheet, Text, View, Dimensions } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import * as Location from 'expo-location'
+import {fetchReports} from './API.js'
 
 function Map() {
   const navigation = useNavigation()
@@ -40,7 +41,7 @@ function Map() {
 
     })()
   }, [])
-
+  /*
   let fetchReports = async(swlat, swlong, nelat, nelong) => {
     let url = "http://e330590adce4.ngrok.io"
     let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjExNWJmMDA1LTFkOTQtNGJkNy1hNjgxLTdkN2U2YjllYzdjNSIsImlhdCI6MTYxNzc4NDQyMCwiZXhwIjoxNjE3ODcwODIwfQ.x_HyooHzwhC3s2a1c4OD6NrNjxlMVsvsZD6azw4wVuc"
@@ -58,7 +59,7 @@ function Map() {
     })
     .catch(error => console.error(error))
     }
-
+*/
   let handleResponse = (response) => {
     if (response.error == undefined){
       //console.log(response.response.reports)
@@ -91,7 +92,6 @@ function Map() {
       
   }
 
-
   let onRegionChangeComplete = async () => {
     let promis = await mref.getMapBoundaries()
     if (promis.northEast.latitude < 1){
@@ -103,7 +103,7 @@ function Map() {
         promis.southWest.longitude,
         promis.northEast.latitude,
         promis.northEast.longitude).then( r => handleResponse(r))
-        //console.log(reports)
+        .catch(e => console.log(e))
     }
     
   }

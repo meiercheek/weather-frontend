@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import MapView, {Marker} from 'react-native-maps'
-import { TextInput, Modal, Button, ActivityIndicator,
+import { SafeAreaView, TextInput, Modal, Button, ActivityIndicator,
     StyleSheet, Text, View, Dimensions } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import * as Location from 'expo-location'
 
 const CreateReport = ({route, _navigation}) => {
     const navigation = useNavigation()
-
+    const [isLoading, setIsLoading] = useState(false)
+    const [report, setReport] = useState(null)
+    const [error, setError] = useState(false)
+    const [marker, setMarker] = useState(null)
     return (
         <SafeAreaView style={styles.container}>
           {isLoading && <View >
@@ -69,3 +72,31 @@ const CreateReport = ({route, _navigation}) => {
   }
 
 export default CreateReport
+
+const styles = StyleSheet.create({
+  map:{
+    flex: 1,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  imageThumbnail: {
+    height: 85,
+    width: 85
+  },
+  button:{
+    alignItems: 'center',
+    justifyContent: 'center'
+
+  },
+  title:{
+    fontSize:16,
+    fontWeight:'bold'
+  },
+  value:{
+    fontSize:14,
+  }
+  
+  })
