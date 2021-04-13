@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { Camera } from 'expo-camera';
-import {copyAsync} from 'expo-file-system'
+import { copyAsync } from 'expo-file-system'
 import { useNavigation } from '@react-navigation/native'
 
 
@@ -14,17 +14,18 @@ const CameraView = () => {
   snap = async () => {
     if (ref) {
       let photo = await ref.takePictureAsync()
+      
       navigation.navigate('CreateReport', {photo})
     }
-  };
+  }
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
+      const { status } = await Camera.requestPermissionsAsync()
+      setHasPermission(status === 'granted')
     })()
 
-  }, []);
+  }, [])
 
   if (hasPermission === null) {
     return <View />
@@ -61,7 +62,7 @@ const CameraView = () => {
         </View>
       </Camera>
     </View>
-  );
+  )
 }
 
 export default CameraView
@@ -87,4 +88,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'white',
   },
-});
+})

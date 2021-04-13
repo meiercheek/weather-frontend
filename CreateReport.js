@@ -17,7 +17,6 @@ const CreateReport = ({route, _navigation}) => {
     const [photo, setPhoto] = useState(null)
 
     let location = route.params?.location
-    
 
     useEffect(() => {
       let weatherType = route.params?.weatherType
@@ -36,7 +35,11 @@ const CreateReport = ({route, _navigation}) => {
       }
 
       let photo = route.params?.photo
-      setPhoto(photo)
+      if (photo != undefined) {
+        let photolink = `data:image/jpg;base64,${photo.base64}`
+        setPhoto(photolink)
+      }
+      
       
     })
 
@@ -94,12 +97,17 @@ const CreateReport = ({route, _navigation}) => {
                       />
                     </>}
                     {item.title == "cameraButton" && 
-                   <Button
+                    <>
+                    {photo && <Image style={styles.imageThumbnail} source={{uri: photo}} />}
+                    
+                    <Button
                       title="Take a photo"
                       onPress={() => {
                         navigation.navigate('Camera')
                       }}
-                    />}
+                    />
+                    </>
+                   }
                 </View>
                 )}
                 keyExtractor={(item, index) => index.toString()}

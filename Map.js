@@ -14,6 +14,7 @@ function Map() {
   const [modalVisible, setModalVisible] = useState(false)
   const [locError, setLocError] = useState(false)
   const [token, setToken] = useState(null)
+  const [currentLocation, setCurrentLocation] = useState(null)
   const [region, setRegion] = useState({
     latitude: 48.733333,
     longitude: 18.933333,
@@ -51,6 +52,7 @@ function Map() {
 
     const getPosition = async () => {
       let location = await Location.getCurrentPositionAsync({})
+      setCurrentLocation(location)
       setRegion({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
@@ -138,10 +140,8 @@ function Map() {
 
         {markers.map((marker) => (
           <Marker
-            //image={require('./assets/icons/sun.png')}
             key={marker.report_id}
             identifier={marker.report_id}
-            //onPress={() => console.log(navigation)}
             onPress={() => navigation.navigate("Details", { marker })}
             coordinate={marker.latlng}
             pinColor={marker.clr}
@@ -165,7 +165,7 @@ function Map() {
       <View style={styles.buttonContainer}>
         <Button style={styles.button} title="Submit a report"
             onPress={() => navigation.navigate('CreateReport', {
-              location: region
+              location: currentLocation
             })}  />
 
      </View>
