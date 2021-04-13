@@ -1,10 +1,7 @@
 
-let url = "https://8f3cbc60a540.ngrok.io"
-let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRmZDUyMTdjLWYwOTItNDYxYy04MjM5LTlkZmI0N2M0OWZhNCIsImlhdCI6MTYxNzk2NDM3MywiZXhwIjoxNjE4MDUwNzczfQ.SoRsliaA8JgW69A77HR9nr9b_eNlyWWmooN1r54G0Vk"
+const url = "https://2cca6fb2ef06.ngrok.io"
 
-
-
-export const fetchReports = (swlat, swlong, nelat, nelong) => {
+export const fetchReports = (token, swlat, swlong, nelat, nelong) => {
     return fetch(`${url}/georeports?SWlat=${swlat}&SWlong=${swlong}&NElat=${nelat}&NElong=${nelong}`, {  
         method: 'GET',
         headers: {
@@ -13,7 +10,7 @@ export const fetchReports = (swlat, swlong, nelat, nelong) => {
     })
     .then((response) => response.json())
     .then((responseData) => {return responseData})
-    .catch(error => {return error}) //TODO: TOTO NENI DOBRE
+    .catch(error => {console.log(error)})
 }
 
 export const fetchLogin = (u, p) => {
@@ -29,7 +26,7 @@ export const fetchLogin = (u, p) => {
     })
     .then((response) => response.json())
     .then((responseData) => {return responseData})
-    .catch(error => error)
+    .catch(error => {console.log(error)})
 }
 
 export const fetchRegister = (e, u, p) => {
@@ -46,10 +43,10 @@ export const fetchRegister = (e, u, p) => {
     })
     .then((response) => response.json())
     .then((responseData) => {return responseData})
-    .catch(error => error)
+    .catch(error => {console.log(error)})
 }
 
-export const fetchWholeReport = () => {
+export const fetchWholeReport = (token, report_id) => {
     return fetch(`${url}/report/${report_id}`, {  
         method: 'GET',
         headers: {
@@ -58,5 +55,5 @@ export const fetchWholeReport = () => {
     })
     .then((response) => response.json())
     .then((responseData) => {return responseData})
-    .catch(error => error)
+    .catch(error => {console.log(error)})
 }

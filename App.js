@@ -12,6 +12,7 @@ import {fetchLogin, fetchRegister} from './API.js'
 import {AuthContext} from './Auth.js'
 import SplashScreen from './SplashScreen.js'
 import Register from './Register.js'
+import CameraView from './Camera.js'
 
 const AppStack = () => {
   const {signOut} = useContext(AuthContext);
@@ -21,7 +22,7 @@ const AppStack = () => {
       <Stack.Screen
         name="Home Screen"
         component={HomeScreen}
-        initialParams={{singOut: signOut}}
+
         options={{ title: 'Weather Report App',
         headerStyle: {
           backgroundColor: '#008bff',
@@ -31,6 +32,7 @@ const AppStack = () => {
       />
       <Stack.Screen name="Details" component={Details} />
       <Stack.Screen name="CreateReport" component={CreateReport} />
+      <Stack.Screen name="Camera" component={CameraView} />
       <Stack.Screen name="WeatherPicker" component={WeatherPicker}  options={{ title: 'Pick a weather situation' }} />
     </Stack.Navigator>
   );
@@ -48,15 +50,14 @@ const HomeScreen = ({route, navigation}) => {
     
     <View style={styles.container}>
       <Map/>
-      <View style={styles.buttonContainer}>
-        <Button style={styles.button} title="Submit a report"
-            onPress={() => navigation.push('CreateReport')}  />
-
-     </View>
+      
     </View>
   )
 }
 
+async function saveToken(key, value) {
+  await SecureStore.setItemAsync(key, value);
+}
 
 
 const Stack = createStackNavigator()
@@ -127,13 +128,9 @@ export default function App({ navigation }) {
       try {
         userToken = await SecureStore.getItemAsync('userToken')
       } catch (e) {
-        // Restoring token failed
+        console.error(`Token restoration failed: ${e}`)
       }
 
-      // After restoring token, we may need to validate it in production apps
-
-      // This will switch to the App screen or Auth screen and this loading
-      // screen will be unmounted and thrown away.
       dispatch({ type: 'RESTORE_TOKEN', token: userToken })
     }
 
@@ -150,10 +147,11 @@ export default function App({ navigation }) {
         if (data && data.username !== undefined && data.password !== undefined){
         const { username, password } = data
         let r = await fetchLogin(username, password)
-        console.log(r)
+        //console.log(r)
         if (r.auth == true){
-          console.log(r)
+            //console.log(r)
            dispatch({ type: 'SIGN_IN', token: r.token })
+           saveToken("userToken", r.token)
         }
         else {
           dispatch({type: 'TO_SIGNIN_PAGE'})
@@ -169,13 +167,14 @@ export default function App({ navigation }) {
         // We will also need to handle errors if sign up failed
         // After getting token, we need to persist the token using `SecureStore`
         // In the example, we'll use a dummy token
-        console.log(data)
+        //console.log(data)
         if (data && data.email !== undefined 
           && data.username !== undefined && data.password !== undefined){
           const { email, username, password } = data
           let r = await fetchRegister(email, username, password)
           if (r.auth === true){
               dispatch({ type: 'SIGNED_UP', token: r.token })
+              saveToken("userToken", r.token)
           }
           else {
             dispatch({type: 'TO_SIGNUP_PAGE'})

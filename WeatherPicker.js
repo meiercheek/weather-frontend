@@ -3,14 +3,14 @@ import MapView, {Marker} from 'react-native-maps'
 import { Button, 
     StyleSheet, Text, View, Dimensions, Image, TouchableOpacity, FlatList, SafeAreaView } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-
+import {imageAssets} from './Data.js'
 
 
 const WeatherPicker = () => {
     const navigation = useNavigation()
     const [weatherType, setWeatherType] = useState('');
 
-    let array = [
+    /*let array = [
         {
             imageLink: require("./assets/icons/sun.png"),
             title: "Sunny"
@@ -26,12 +26,12 @@ const WeatherPicker = () => {
             title: "Cloudy"
 
         }
-    ]
+    ]*/
 
     return (
     <SafeAreaView style={styles.container}>
         <FlatList
-            data={array}
+            data={imageAssets}
             renderItem={({ item }) => (
             <View style={{ flex: 1, flexDirection: 'column', margin: 1 }}>
                 <TouchableOpacity style={styles.button} onPress={()=>

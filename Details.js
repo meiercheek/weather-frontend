@@ -4,6 +4,7 @@ import {  View, Text, StyleSheet, Dimensions, ActivityIndicator, FlatList, Scrol
 import { useEffect, useState } from 'react'
 import MapView, { Marker } from 'react-native-maps'
 import {fetchWholeReport} from './API.js'
+import * as SecureStore from 'expo-secure-store'
 
 
 const Details = ({route, navigation}) => {
@@ -11,10 +12,13 @@ const Details = ({route, navigation}) => {
     const [report, setReport] = useState(null)
     const [error, setError] = useState(false)
     const [marker, setMarker] = useState(null)
+    //const [token, setToken] = useState(null)
     report_id = route.params?.marker.report_id
     useEffect(() => { 
-        fetchWholeReport().then((responseData) =>{
-          if(responseData.response.report !== undefined) {
+      SecureStore.getItemAsync('userToken').then((token) =>
+        fetchWholeReport(token, report_id).then((responseData) => {
+          
+          if(responseData != undefined && responseData.response.report != undefined) {
             
             let report = responseData.response.report
             let array = [
@@ -46,13 +50,19 @@ const Details = ({route, navigation}) => {
           setIsLoading(false)
           setReport(array)
           }
-          else if(responseData.response.error) {
+          else if(responseData.response.error != undefined) {
             setError(true)
             setIsLoading(false)
           }
+        }
+        ).catch(e => console.error("details:" + e))
 
-        })
-  
+
+
+      )
+      .catch(e =>
+        console.error(`Token restoration failed in Details: ${e}`)
+      ) 
     }, [])
   
     
