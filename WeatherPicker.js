@@ -10,24 +10,6 @@ const WeatherPicker = () => {
     const navigation = useNavigation()
     const [weatherType, setWeatherType] = useState('');
 
-    /*let array = [
-        {
-            imageLink: require("./assets/icons/sun.png"),
-            title: "Sunny"
-
-        },
-        {
-            imageLink: require("./assets/icons/rain.png"),
-            title: "Rain"
-
-        },
-        {
-            imageLink: require("./assets/icons/cloud.png"),
-            title: "Cloudy"
-
-        }
-    ]*/
-
     return (
     <SafeAreaView style={styles.container}>
         <FlatList
