@@ -8,10 +8,11 @@ import { useNavigation } from '@react-navigation/native'
 import * as Location from 'expo-location'
 import { fetchReports } from './API.js'
 import * as SecureStore from 'expo-secure-store'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 function Map() {
   const navigation = useNavigation()
-  const [modalVisible, setModalVisible] = useState(false)
+  const [modalVisible, setModalVisible] = useState(true)
   const [locError, setLocError] = useState(false)
   const [token, setToken] = useState(null)
   const [currentLocation, setCurrentLocation] = useState(null)
@@ -25,6 +26,37 @@ function Map() {
   const [markers, setMarkers] = useState([])
   const [mref, setRef] = useState(null)
 
+  const getPermission = async () => {
+    try {
+      let { status } = await Location.requestPermissionsAsync()
+      if (status !== 'granted') {
+        setLocError(true)
+      }
+    }
+    catch(e) {
+      setLocError(true)
+    }
+  }
+
+
+  const getPosition = async () => {
+    try {
+      let location = await Location.getCurrentPositionAsync({})
+      setCurrentLocation(location)
+      setRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 20,
+        longitudeDelta: 20
+      })
+    }
+    catch(e) {
+      setLocError(true)
+    }
+    
+    
+  }
+
   useEffect(() => {
 
     const getToken = async () => {
@@ -37,34 +69,11 @@ function Map() {
       }
     }
 
-    const getPermission = async () => {
-      try {
-        let { status } = await Location.requestPermissionsAsync()
-        if (status !== 'granted') {
-          setLocError(true)
-        }
-      }
-      catch(e) {
-        setLocError(true)
-      }
-    }
-
-
-    const getPosition = async () => {
-      let location = await Location.getCurrentPositionAsync({})
-      setCurrentLocation(location)
-      setRegion({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: 20,
-        longitudeDelta: 20
-      })
-    }
+    
 
     getToken()
     getPermission()
     getPosition()
-
   }, [])
 
   let handleResponse = (response) => {
@@ -91,7 +100,7 @@ function Map() {
       }
       //console.log(markers)
       setMarkers(markers)
-
+      setModalVisible(false)
     }
     else {
       console.log(response.error)
@@ -134,7 +143,6 @@ function Map() {
         onRegionChangeComplete={region => {
           setRegion(region)
           onRegionChangeComplete()
-          setModalVisible(false)
         }}
       >
 
@@ -164,9 +172,18 @@ function Map() {
       </View>
       <View style={styles.buttonContainer}>
         <Button style={styles.button} title="Submit a report"
-            onPress={() => navigation.navigate('CreateReport', {
-              location: currentLocation
-            })}  />
+            onPress={() => {
+              if(currentLocation != null || currentLocation != undefined) {
+                navigation.navigate('CreateReport', {
+                  location: currentLocation
+                })
+              }
+              
+              else {
+                Alert.alert("No user location")
+              }}
+            }
+        />
 
      </View>
     </View>
@@ -184,6 +201,12 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
     zIndex: -1
+  },
+  refreshButton:{
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    backgroundColor: "#008bff",
   },
   buttonContainer:{
     position: 'absolute',

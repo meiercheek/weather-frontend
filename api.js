@@ -1,5 +1,5 @@
 
-const url = "https://2cca6fb2ef06.ngrok.io"
+const url = "https://a29f9a010e22.ngrok.io"
 
 export const fetchReports = (token, swlat, swlong, nelat, nelong) => {
     return fetch(`${url}/georeports?SWlat=${swlat}&SWlong=${swlong}&NElat=${nelat}&NElong=${nelong}`, {  

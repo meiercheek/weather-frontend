@@ -10,16 +10,16 @@ import {imageAssets} from './Data.js'
 const CreateReport = ({route, _navigation}) => {
     const navigation = useNavigation()
     const [isLoading, setIsLoading] = useState(false)
-    const [text, onChangeText] = React.useState("Useless Text")
+    const [text, onChangeText] = React.useState("")
     const [error, setError] = useState(false)
-    const [icon, setIcon] = useState(imageAssets[0].imageLink)
+    //const [icon, setIcon] = useState(imageAssets[0].imageLink)
     const [type, setType] = useState(null)
     const [photo, setPhoto] = useState(null)
-
+    let icon = null
     let location = route.params?.location
 
     useEffect(() => {
-      let weatherType = route.params?.weatherType
+      /*let weatherType = route.params?.weatherType
       switch (weatherType) {
         case("Sunny"):
           setIcon(imageAssets[0].imageLink)
@@ -33,7 +33,7 @@ const CreateReport = ({route, _navigation}) => {
         default:
           setIcon(imageAssets[0].imageLink) 
       }
-
+*/
       let photo = route.params?.photo
       if (photo != undefined) {
         let photolink = `data:image/jpg;base64,${photo.base64}`
@@ -46,7 +46,7 @@ const CreateReport = ({route, _navigation}) => {
     let optionsList = [
       {
         title: "weatherPicker",
-        value: imageAssets[0].imageLink
+        value: "placeholder"
       },
       {
         title: "description",
@@ -77,7 +77,7 @@ const CreateReport = ({route, _navigation}) => {
                       />
                 
               </MapView>
-              {photo && <Text>{JSON.stringify(photo.uri)} </Text>}
+              
             <FlatList style={{margin:10}}
                 data={optionsList}
                 renderItem={({ item }) => (
@@ -96,18 +96,7 @@ const CreateReport = ({route, _navigation}) => {
                         }}
                       />
                     </>}
-                    {item.title == "cameraButton" && 
-                    <>
-                    {photo && <Image style={styles.imageThumbnail} source={{uri: photo}} />}
                     
-                    <Button
-                      title="Take a photo"
-                      onPress={() => {
-                        navigation.navigate('Camera')
-                      }}
-                    />
-                    </>
-                   }
                 </View>
                 )}
                 keyExtractor={(item, index) => index.toString()}
@@ -116,6 +105,7 @@ const CreateReport = ({route, _navigation}) => {
         </SafeAreaView>
       )
       /*
+       
       <Button
           title="Pick a weather situation"
           onPress={() => {
