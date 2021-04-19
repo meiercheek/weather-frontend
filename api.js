@@ -14,8 +14,20 @@ export const getThisUser = (token) => {
     .catch(error => {console.log(error)})
 }
 
+export const getThisUsersReports = (token, user_id) => {
+    return fetch(`${url}/reports/${user_id}`, {  
+        method: 'GET',
+        headers: {
+            'x-access-token': token,
+        },
+    })
+    .then((response) => response.json())
+    .then((responseData) => {return responseData})
+    .catch(error => {console.log(error)})
+}
+
 export const sendReport = (token, report) => {
-    console.log(report)
+    //console.log(report)
     return fetch(`${url}/reports`, {  
         method: 'POST',
         headers: {
@@ -30,7 +42,7 @@ export const sendReport = (token, report) => {
 }
 
 export const fetchLocationName = (lat, long) => {
-    return fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${long}&format=json`, {  
+    return fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${long}&format=json&zoom=14`, {  
         method: 'GET',
     })
     .then((response) => response.json())

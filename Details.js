@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import MapView, { Marker } from 'react-native-maps'
 import {fetchWholeReport} from './API.js'
 import * as SecureStore from 'expo-secure-store'
+import moment from 'moment'
 
 
 const Details = ({route, navigation}) => {
@@ -12,7 +13,7 @@ const Details = ({route, navigation}) => {
     const [error, setError] = useState(false)
     const [marker, setMarker] = useState(null)
     //const [token, setToken] = useState(null)
-    console.table(route)
+    //console.table(route)
     report_id = route.params?.marker.report_id
     useEffect(() => { 
       SecureStore.getItemAsync('userToken').then((token) =>
@@ -37,7 +38,7 @@ const Details = ({route, navigation}) => {
               },
               {
                 title: "Time of submission",
-                value: report.uploadtime
+                value: moment(report.uploadtime).format('MMMM Do YYYY, h:mm:ss a')
               },
               {
                 title: "Photo",

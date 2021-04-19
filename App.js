@@ -7,16 +7,18 @@ import Details from './Details.js'
 import CreateReport from './CreateReport.js'
 import WeatherPicker from './WeatherPicker.js'
 import Login from './Login.js'
+import { useNavigation } from '@react-navigation/native'
 import * as SecureStore from 'expo-secure-store'
 import {fetchLogin, fetchRegister} from './API.js'
 import {AuthContext} from './Auth.js'
 import SplashScreen from './SplashScreen.js'
 import Register from './Register.js'
 import CameraView from './Camera.js'
+import ReportList from './screens/ReportList'
 
 const AppStack = () => {
   const {signOut} = useContext(AuthContext);
-
+  const navigation = useNavigation()
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -28,12 +30,21 @@ const AppStack = () => {
           backgroundColor: '#008bff',
         },
         headerTintColor: '#fff',
+        headerRight: () => (
+          <Button
+            onPress={() => navigation.navigate('ReportList')}
+            title="My reports"
+            color="#000"
+          />
+        ),
       }}
       />
       <Stack.Screen name="Details" component={Details} />
-      <Stack.Screen name="CreateReport" component={CreateReport} />
+      <Stack.Screen name="CreateReport" options={{ title: 'Create a report'}}
+         component={CreateReport} />
       <Stack.Screen name="Camera" component={CameraView} />
-      <Stack.Screen name="WeatherPicker" component={WeatherPicker}  options={{ title: 'Pick a weather situation' }} />
+      <Stack.Screen name="WeatherPicker" options={{ title: 'Pick a weather type'}} component={WeatherPicker}  options={{ title: 'Pick a weather situation' }} />
+      <Stack.Screen name="ReportList" options={{ title: 'My reports'}} component={ReportList} />
     </Stack.Navigator>
   );
 }

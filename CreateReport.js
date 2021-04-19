@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import MapView, {Marker} from 'react-native-maps'
-import { SafeAreaView, TextInput, Modal, Button, ActivityIndicator,
-    StyleSheet, Text, View, Dimensions, FlatList, Alert, Image } from 'react-native'
+import { SafeAreaView, TextInput, Modal, ActivityIndicator,
+    StyleSheet, Text, View, Dimensions, FlatList, Alert, Image, Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import * as Location from 'expo-location'
 import {imageAssets, empty} from './Data.js'
 import * as SecureStore from 'expo-secure-store'
 import {fetchLocationName, getThisUser, sendReport} from './API.js'
-
-
 
 const CreateReport = ({route, _navigation}) => {
     const navigation = useNavigation()
@@ -30,8 +28,14 @@ const CreateReport = ({route, _navigation}) => {
 
     const getDisplayLocation = async () => {
       try {
-        let response = await fetchLocationName(location.latitude, location.longitude)
-        setDisplayLoc(`${response.address.city}, ${response.address.country}`)
+        
+        
+        let {display_name} = await fetchLocationName(location.latitude, location.longitude)
+        let divide = display_name.split(',')
+        let city = divide[0]
+        let country = divide[divide.length - 1]
+        
+        setDisplayLoc(`${city},${country}`)
       } catch (e) {
         console.error(`display loc failed: ${e}`)
       }
@@ -39,13 +43,16 @@ const CreateReport = ({route, _navigation}) => {
 
     const postReport = async () => {
         let description
-        console.log("lel")
+        //console.log("lel")
         let token = await SecureStore.getItemAsync('userToken')
         let userIdResponse = await getThisUser(token)
         userIdResponse = userIdResponse.response.user_id
-        console.log(`${token}, ${userIdResponse}`)
+        //console.log(`${token}, ${userIdResponse}`)
         if(text == ""){
           description = "-"
+        }
+        else{
+          description = text
         }
         sendReport(token, {
           user_id: userIdResponse,
@@ -57,20 +64,18 @@ const CreateReport = ({route, _navigation}) => {
           photo: pb64
         }).then((sentReport )=>{
           setModalVisible(false)
+          console.log(sentReport)
           if(sentReport.response == "success"){
             navigation.navigate('HomeScreen')
+          }
+          else{
+            Alert.alert("Check your report and try again")
           }
           
         }).catch((e) =>{
           console.error(`display loc failed: ${e}`)
         })
-        
-        
-        
-      
-        
-      
-      
+
     }
 
     useEffect(() => {
@@ -112,6 +117,10 @@ const CreateReport = ({route, _navigation}) => {
 
     let optionsList = [
       {
+        title: "Approximate location name:",
+        value: displayLoc
+      },
+      {
         title: "weatherPicker",
         value: "placeholder"
       },
@@ -120,7 +129,7 @@ const CreateReport = ({route, _navigation}) => {
         value: "description"
       },
       {
-        title: "cameraButton",
+        title: "cameraPressable",
         value: "bude dobre"
       },
       {
@@ -135,50 +144,57 @@ const CreateReport = ({route, _navigation}) => {
                 
                       </View>}
            {region && <>
-            
-            <Text>Approximate location name:</Text>
-            <Text>{displayLoc}</Text>
-            <FlatList style={{margin:10}}
+            <FlatList style={{margin:30}}
                 data={optionsList}
                 renderItem={({ item }) => (
-                <View style={{ flex: 1, flexDirection: 'column' }}>
+                <View style={{ flex: 1,justifyContent:'center', flexDirection: 'column' }}>
+                  {item.title == "Approximate location name:" && <>
+                   <Text style={styles.title}>{item.title}</Text>
+                   <Text style={styles.value}>{item.value}</Text>
+                  </>}
                    {item.title == "Description" && <>
                    <Text style={styles.title}>{item.title}</Text>
-                   <TextInput
-                   style={styles.input}
-                   onChangeText={onChangeText}
-                   value={text}/></>}
+
+                   <View style={styles.inputView} >
+                      <TextInput style={styles.inputText}
+                                placeholder="Enter a description here"
+                                onChangeText={onChangeText}
+                                value={text} />
+                  </View>
+                  </>}
                    {item.title == "weatherPicker" && 
                    <>
                     <Image style={styles.imageThumbnail} source={icon} />
-                    <Button
-                        title="Pick a weather situation"
+                    <Text>{weatherType}</Text>
+                    <Pressable style={styles.button}
                         onPress={() => {
                           navigation.push('WeatherPicker')
-                        }}
-                      />
+                        }}>
+                          <Text style={styles.textStyle}>Pick a weather situation</Text>
+                    </Pressable>
                     </>}
-                    {item.title == "cameraButton" && 
+                    {item.title == "cameraPressable" && 
                     <>
                     {photo && <Image style={styles.imageThumbnail} source={{uri: photo}} />}
-                    <Button
-                      title="Take a photo"
+                    <Pressable
+                      style={styles.button}
                       onPress={() => {
                         navigation.navigate('Camera')
-                      }}
-                    />
+                      }}>
+                      <Text style={styles.textStyle}>Take a photo</Text>
+                    </Pressable>
                     </>
                    }
                     {item.title == "submit" && 
                    <>
-                    <Button
-                        title="Submit report"
+                    <Pressable style={styles.button}
                         onPress={() => {
                           setModalVisible(true)
                           postReport()
                           
-                        }}
-                      />
+                        }}>
+                          <Text style={styles.textStyle}>Submit report</Text>
+                      </Pressable>
                     </>}
                     
                 </View>
@@ -220,9 +236,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#f0f0f0',
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  button: {
+    borderRadius: 20,
+    padding: 20,
+    elevation: 2,
+    backgroundColor: "#2196F3",
+    width: '70%',
+    marginBottom: 20
   },
   title:{
     fontSize:16,
@@ -233,13 +261,10 @@ const styles = StyleSheet.create({
   },
   imageThumbnail: {
     height: 85,
-    width: 85
+    width: 85,
+    margin:20
   },
-  button:{
-    alignItems: 'center',
-    justifyContent: 'center'
 
-  },
   title:{
     fontSize:16,
     fontWeight:'bold'
@@ -271,5 +296,18 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center"
+  },
+  inputView: {
+    width: "80%",
+    backgroundColor: "#fff",
+    borderRadius: 25,
+    height: 50,
+    marginBottom: 20,
+    justifyContent: "center",
+    padding: 20
+  },
+  inputText: {
+    height: 50,
+    color: "black"
   },
   })

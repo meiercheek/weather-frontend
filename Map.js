@@ -130,10 +130,9 @@ function Map() {
   return (
     <View style={styles.container}>
       <MapView style={styles.map}
-        tracksViewChanges={false}
         rotateEnabled={false}
-        showsPointsOfInterest={false}
         showsUserLocation={true}
+        showsMyLocationButton={true}
         userLocationPriority={'passive'}
         region={region}
         ref={(ref) => {
