@@ -13,5 +13,11 @@ export const imageAssets = [
         imageLink: require("./assets/icons/cloud.png"),
         title: "Cloudy"
 
-    }
+    },
+    
 ]
+
+export const empty = {
+    imageLink: require("./assets/icons/empty.png"),
+    title: "Empty"
+}

@@ -21,7 +21,7 @@ function Map() {
     longitude: 18.933333,
     latitudeDelta: 40,
     longitudeDelta: 40
-  });
+  })
 
   const [markers, setMarkers] = useState([])
   const [mref, setRef] = useState(null)
@@ -42,6 +42,7 @@ function Map() {
   const getPosition = async () => {
     try {
       let location = await Location.getCurrentPositionAsync({})
+      console.log(location)
       setCurrentLocation(location)
       setRegion({
         latitude: location.coords.latitude,
@@ -187,7 +188,7 @@ function Map() {
 
      </View>
     </View>
-  );
+  )
 }
 export default Map
 const styles = StyleSheet.create({

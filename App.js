@@ -20,7 +20,7 @@ const AppStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Home Screen"
+        name="HomeScreen"
         component={HomeScreen}
 
         options={{ title: 'Weather Report App',

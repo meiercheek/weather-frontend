@@ -1,6 +1,5 @@
-
 import * as React from 'react'
-import {  View, Text, StyleSheet, Dimensions, ActivityIndicator, FlatList, ScrollView, SafeAreaView } from 'react-native'
+import {  View, Text, StyleSheet, Image, Dimensions, ActivityIndicator, FlatList, ScrollView, SafeAreaView } from 'react-native'
 import { useEffect, useState } from 'react'
 import MapView, { Marker } from 'react-native-maps'
 import {fetchWholeReport} from './API.js'
@@ -13,14 +12,16 @@ const Details = ({route, navigation}) => {
     const [error, setError] = useState(false)
     const [marker, setMarker] = useState(null)
     //const [token, setToken] = useState(null)
+    console.table(route)
     report_id = route.params?.marker.report_id
     useEffect(() => { 
       SecureStore.getItemAsync('userToken').then((token) =>
         fetchWholeReport(token, report_id).then((responseData) => {
-          
+          //console.log(responseData)
           if(responseData != undefined && responseData.response.report != undefined) {
             
             let report = responseData.response.report
+            //console.log(report.photo)
             let array = [
               {
                 title: "Weather type",
@@ -40,7 +41,7 @@ const Details = ({route, navigation}) => {
               },
               {
                 title: "Photo",
-                value: "bude dobre"
+                value: report.photo
               },
             ]
           setMarker({
@@ -98,7 +99,13 @@ const Details = ({route, navigation}) => {
               renderItem={({ item }) => (
               <View style={{ flex: 1, flexDirection: 'column' }}>
                   <Text style={styles.title}>{item.title}</Text>
-                  <Text style={styles.value}>{item.value}</Text>
+                  {item.title != "Photo" &&
+                  <Text style={styles.value}>{item.value}</Text>}
+                  {item.title == "Photo" &&<>
+      
+                    <Image style={styles.imageThumbnail} source={{uri: `data:image/jpg;base64,${item.value}`}}></Image>
+                  
+                  </>}
               </View>
               )}
               keyExtractor={(item, index) => index.toString()}
@@ -121,8 +128,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   imageThumbnail: {
-    height: 85,
-    width: 85
+    height: 100,
+    width: 100
   },
   button:{
     alignItems: 'center',

@@ -1,22 +1,36 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Modal, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native'
 import { Camera } from 'expo-camera';
-import { copyAsync } from 'expo-file-system'
 import { useNavigation } from '@react-navigation/native'
+import * as ImageManipulator from 'expo-image-manipulator';
+
+
+
 
 
 const CameraView = () => {
-  const [hasPermission, setHasPermission] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
+  const [hasPermission, setHasPermission] = useState(null)
+  const [modalVisible, setModalVisible] = useState(false)
+  const [type, setType] = useState(Camera.Constants.Type.back)
   const [ref, setRef] = useState(null)
   const navigation = useNavigation()
 
-  snap = async () => {
+  const snap = async () => {
     if (ref) {
-      let photo = await ref.takePictureAsync()
-      
-      navigation.navigate('CreateReport', {photo})
+        setModalVisible(true)
+        let photo = await ref.takePictureAsync({
+          quality: 0,
+          base64: true
+        })
+
+        const {base64} = await ImageManipulator.manipulateAsync(
+          photo.uri, [{resize: {width: 700}}], {base64:true}
+        )
+
+        setModalVisible(false)
+        navigation.navigate('CreateReport', {photo: photo.uri, b64: base64})
     }
+    
   }
 
   useEffect(() => {
@@ -61,6 +75,21 @@ const CameraView = () => {
           </TouchableOpacity>
         </View>
       </Camera>
+      <View style={styles.centeredView}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <ActivityIndicator size="large" color="#00a6ff" />
+              <Text style={styles.modalText}>Capturing</Text>
+            </View>
+          </View>
+        </Modal>
+      </View>
+      
     </View>
   )
 }
@@ -72,7 +101,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   camera: {
-    flex: 1,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+    zIndex: -1
   },
   buttonContainer: {
     flex: 1,
@@ -87,5 +118,30 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 18,
     color: 'white',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalView: {
+    width: Dimensions.get('window').width - 85,
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 25,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center"
   },
 })

@@ -6,8 +6,8 @@ import {AuthContext} from './Auth.js'
 
 
 const Login = ({navigation}) => {
-  const [username, setUsername] = React.useState('')
-  const [password, setPassword] = React.useState('')
+  const [username, setUsername] = React.useState('lubko')
+  const [password, setPassword] = React.useState('lubko')
 
   const { signIn, signUp } = React.useContext(AuthContext)
 
