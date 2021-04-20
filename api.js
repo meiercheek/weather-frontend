@@ -2,6 +2,35 @@
 const url = "http://192.168.0.104:3000"
 //const url = "https://ad69cf91c69e.ngrok.io"
 
+export const updateReport = (token, report_id, report) =>{
+    return fetch(`${url}/reports/${report_id}`, {  
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': token,
+        },
+        body: JSON.stringify(report)
+    })
+    .then((response) => response.json())
+    .then((responseData) => {return responseData})
+    .catch(error => {console.error(error)})
+}
+
+
+export const deleteReport = (token, report_id) =>{
+    return fetch(`${url}/reports/${report_id}`, {  
+        method: 'DELETE',
+        headers: {
+            'x-access-token': token,
+        },
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+        return responseData})
+    .catch(error => {console.log(error)})
+}
+
+
 export const getThisUser = (token) => {
     return fetch(`${url}/me`, {  
         method: 'GET',

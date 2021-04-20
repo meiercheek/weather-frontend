@@ -6,18 +6,33 @@ import { useNavigation } from '@react-navigation/native'
 import {imageAssets} from './Data.js'
 
 
-const WeatherPicker = () => {
+const WeatherPicker = ({route, _navigation}) => {
     const navigation = useNavigation()
-    const [weatherType, setWeatherType] = useState('');
-
+    const [weatherType, setWeatherType] = useState('')
+    const [edit, setEdit] = useState(false)
+    
+      useEffect(()=>{
+        if(route.params != undefined){
+          if(route.params.hasOwnProperty("edit")){
+            setEdit(true)
+          }
+        }
+      },[])
     return (
     <SafeAreaView style={styles.container}>
         <FlatList
             data={imageAssets}
             renderItem={({ item }) => (
             <View style={{ flex: 1, flexDirection: 'column', margin: 1 }}>
-                <TouchableOpacity style={styles.button} onPress={()=>
-                    navigation.navigate('CreateReport', {weatherType: item.title})}>
+                <TouchableOpacity style={styles.button} onPress={()=>{
+                    if(edit) {
+                      navigation.navigate('EditReport', {weatherType: item.title})
+                    }
+                    else {
+                      navigation.navigate('CreateReport', {weatherType: item.title})
+                    }    
+                }
+                }>
                     <Image style={styles.imageThumbnail} source={item.imageLink} />
                     <Text>{item.title}</Text>
                 </TouchableOpacity>

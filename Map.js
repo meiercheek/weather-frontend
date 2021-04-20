@@ -78,7 +78,8 @@ function Map() {
   }, [])
 
   let handleResponse = (response) => {
-    if (response && response.error == undefined) {
+    if(response.hasOwnProperty("response")){
+      if(response.response.hasOwnProperty("reports")) {
       //console.log(response.response.reports)
       let colors = ["tomato", "orange", "yellow", "gold",
         "wheat", "tan", "linen", "green", "blue", "navy",
@@ -102,6 +103,7 @@ function Map() {
       //console.log(markers)
       setMarkers(markers)
       setModalVisible(false)
+      }
     }
     else {
       console.log(response.error)

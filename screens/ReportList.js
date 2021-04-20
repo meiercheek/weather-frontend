@@ -1,40 +1,76 @@
 import React, { useEffect } from 'react'
 import { Dimensions, StyleSheet, Modal, Pressable, View, Text, Alert, SafeAreaView, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native'
 import Card from '../components/Card.js'
-import {getThisUsersReports, getThisUser} from '../API.js'
+import {getThisUsersReports, getThisUser, deleteReport} from '../API.js'
 import { useState } from 'react'
 import * as SecureStore from 'expo-secure-store'
 import { useNavigation } from '@react-navigation/native'
 import moment from 'moment'
 
 
-const ReportList = () => {
+const ReportList = ({route, _navigation}) => {
   const navigation = useNavigation()
   const [isLoading, setIsLoading] = useState(true)
   const [list, setList] = useState(null)
   const [modalVisible, setModalVisible] = useState(false)
+  const [toDelete, setToDelete]= useState(null)
+  const [isEmpty, setIsEmpty] = useState(false)
 
   const getList = async () => {
- 
     let reportlist
     let token = await SecureStore.getItemAsync('userToken')
     let userIdResponse = await getThisUser(token)
     userIdResponse = userIdResponse.response.user_id
-    getThisUsersReports(token, userIdResponse).then((responseData)=> {
-        if(responseData != undefined){
-          if (responseData.response != undefined){
+    getThisUsersReports(token, userIdResponse).then((responseData) => {
+      if(responseData.hasOwnProperty("response")){
+        if(responseData.response.hasOwnProperty("reports")) {
             reportlist = responseData.response.reports
             let array = []
-            for (let i = 0; i < reportlist.length; i++){
+            for (let i = 0; i < reportlist.length; i++) {
               array.push({title: reportlist[i].characteristic, value: reportlist[i]})
             }
-            setList(array)
-            setIsLoading(false)
+            if(array.length == 0){
+              setIsEmpty(true)
+            }
+            else {
+              setList(array)
+            }
+
           }
-        }
+      }
+      else{
+        setIsEmpty(true)
+      }
+      setIsLoading(false)
     })
   
   }
+
+  const removeReport = async (id) => {
+    let token = await SecureStore.getItemAsync('userToken')
+    deleteReport(token, id).then((responseData) => {
+      console.log(responseData)
+      if(responseData.hasOwnProperty("response")){
+        if (responseData.response == "deleted"){
+          Alert.alert("Report deleted")
+          setIsLoading(true)
+        }
+      }
+      else{
+        Alert.alert("An error occured")
+      }
+    }).catch((e)=>{
+      console.log(e)
+    })
+  }
+
+  useEffect(() => { 
+    if(route.params != undefined){
+      if(route.params.hasOwnProperty("refresh")){
+        getList()
+      }
+    }
+  })
 
   useEffect(() => { 
     getList()
@@ -47,7 +83,11 @@ const ReportList = () => {
                 
                       </View>
         }
-        {list &&
+        {isEmpty && <View >
+          <Text>You have not submitted any reports yet.</Text>     
+        </View>}
+
+        {list && !isEmpty &&
           <FlatList
           data={list}
           renderItem={({ item }) => (
@@ -63,8 +103,7 @@ const ReportList = () => {
                       <Pressable
                           style={[styles.button, styles.buttonEdit]}
                           onPress={() => {
-  
-                            
+                            navigation.navigate("EditReport", {report: item.value.report_id})
                           }}>
                       
                         <Text style={styles.textStyle}>Edit</Text>
@@ -73,7 +112,7 @@ const ReportList = () => {
                           style={[styles.button, styles.buttonDelete]}
                           onPress={() => {
                             setModalVisible(!modalVisible)
-                            
+                            setToDelete(item.value.report_id)
                           }}>
                       
                         <Text style={styles.textStyle}>Delete</Text>
@@ -100,8 +139,9 @@ const ReportList = () => {
                   <Pressable
                       style={[styles.modalbutton, styles.buttonDelete]}
                       onPress={() => {
+                        removeReport(toDelete)
                         setModalVisible(!modalVisible)
-
+                        getList()
                       }}
                   >
                       <Text style={styles.textStyle}>Delete report</Text>
@@ -110,7 +150,6 @@ const ReportList = () => {
                       style={[styles.modalbutton, styles.buttonEdit]}
                       onPress={() => {
                         setModalVisible(!modalVisible)
-
                       }}
                   >
                       <Text style={styles.textStyle}>Cancel</Text>

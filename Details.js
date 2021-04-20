@@ -18,11 +18,9 @@ const Details = ({route, navigation}) => {
     useEffect(() => { 
       SecureStore.getItemAsync('userToken').then((token) =>
         fetchWholeReport(token, report_id).then((responseData) => {
-          //console.log(responseData)
-          if(responseData != undefined && responseData.response.report != undefined) {
-            
+          if(responseData.hasOwnProperty("response")){
+            if(responseData.response.hasOwnProperty("report")) { 
             let report = responseData.response.report
-            //console.log(report.photo)
             let array = [
               {
                 title: "Weather type",
@@ -52,10 +50,11 @@ const Details = ({route, navigation}) => {
           setIsLoading(false)
           setReport(array)
           }
-          else if(responseData.response.error != undefined) {
+          else if(responseData.hasOwnProperty("error")) {
             setError(true)
             setIsLoading(false)
           }
+        }
         }
         ).catch(e => console.error("details:" + e))
 

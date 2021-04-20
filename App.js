@@ -15,6 +15,7 @@ import SplashScreen from './SplashScreen.js'
 import Register from './Register.js'
 import CameraView from './Camera.js'
 import ReportList from './screens/ReportList'
+import EditReport from './screens/EditReport.js'
 
 const AppStack = () => {
   const {signOut} = useContext(AuthContext);
@@ -42,9 +43,12 @@ const AppStack = () => {
       <Stack.Screen name="Details" component={Details} />
       <Stack.Screen name="CreateReport" options={{ title: 'Create a report'}}
          component={CreateReport} />
+         <Stack.Screen name="EditReport" options={{ title: 'Edit a report'}}
+         component={EditReport} />
       <Stack.Screen name="Camera" component={CameraView} />
       <Stack.Screen name="WeatherPicker" options={{ title: 'Pick a weather type'}} component={WeatherPicker}  options={{ title: 'Pick a weather situation' }} />
       <Stack.Screen name="ReportList" options={{ title: 'My reports'}} component={ReportList} />
+
     </Stack.Navigator>
   );
 }

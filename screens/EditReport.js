@@ -1,58 +1,68 @@
 import React, { useState, useEffect } from 'react'
-import MapView, {Marker} from 'react-native-maps'
 import { SafeAreaView, TextInput, Modal, ActivityIndicator,
     StyleSheet, Text, View, Dimensions, FlatList, Alert, Image, Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import * as Location from 'expo-location'
-import {imageAssets, empty} from './Data.js'
+import {imageAssets, empty} from '../Data.js'
 import * as SecureStore from 'expo-secure-store'
-import {fetchLocationName, getThisUser, sendReport} from './API.js'
+import {updateReport, fetchWholeReport} from '../API.js'
 
-const CreateReport = ({route, _navigation}) => {
+const EditReport = ({route, _navigation}) => {
     const navigation = useNavigation()
     const [isLoading, setIsLoading] = useState(true)
     const [modalVisible, setModalVisible] = useState(false)
     const [text, onChangeText] = React.useState("")
+    const [error, setError] = useState(false)
     const [icon, setIcon] = useState(null)
     const [photo, setPhoto] = useState(null)
     const [displayLoc, setDisplayLoc] = useState(null)
     const [region, setRegion] = useState(null)
     const [weatherType, setWeatherType] = useState(null)
     const [pb64, setPb64] = useState('-')
+    const [userId, setUserId] = useState('-')
+    const [reportId, setReportId] = useState('-')
 
-
-    let location = route.params.location.coords
-
-    const getDisplayLocation = async () => {
-      try {
+    const getWholeReport = async(id) =>{
+        SecureStore.getItemAsync('userToken').then((token) =>{
+            fetchWholeReport(token, id)
+        .then((responseData) => {
+            if(responseData.hasOwnProperty("response")){
+              if(responseData.response.hasOwnProperty("report")) { 
+                let report = responseData.response.report
+                setWeatherType(report.characteristic)
+                setUserId(report.user_id)
+                setReportId(report.report_id)
+                setRegion({
+                    latitude: report.latitude,
+                    longitude: report.longitude
+                })
+                onChangeText(report.description)
+                setDisplayLoc(report.location)
+                setIsLoading(false)
+              }
+            }
+            else if(responseData.hasOwnProperty("error")) {
+                setError(true)
+                setIsLoading(false)
+              }
+            })
+            
+        .catch(e => console.error("edit:" + e))
+        })
         
         
-        let {display_name} = await fetchLocationName(location.latitude, location.longitude)
-        let divide = display_name.split(',')
-        let city = divide[0]
-        let country = divide[divide.length - 1]
-        
-        setDisplayLoc(`${city},${country}`)
-      } catch (e) {
-        console.error(`display loc failed: ${e}`)
-      }
     }
 
     const postReport = async () => {
         let description
-        //console.log("lel")
         let token = await SecureStore.getItemAsync('userToken')
-        let userIdResponse = await getThisUser(token)
-        userIdResponse = userIdResponse.response.user_id
-        //console.log(`${token}, ${userIdResponse}`)
         if(text == ""){
           description = "-"
         }
         else{
           description = text
         }
-        sendReport(token, {
-          user_id: userIdResponse,
+        updateReport(token, reportId ,{
+          user_id: userId,
           description: description,
           characteristic: weatherType,
           location: displayLoc,
@@ -63,7 +73,7 @@ const CreateReport = ({route, _navigation}) => {
           setModalVisible(false)
           console.log(sentReport)
           if(sentReport.response == "success"){
-            navigation.navigate('HomeScreen')
+            navigation.navigate('ReportList', {refresh:true})
           }
           else{
             Alert.alert("Check your report and try again")
@@ -74,39 +84,31 @@ const CreateReport = ({route, _navigation}) => {
         })
 
     }
-
     useEffect(() => {
-      setRegion(location)
-      getDisplayLocation()
-      setIsLoading(false)
-      let weatherType = route.params?.weatherType
-      //console.log(route)
-      switch (weatherType) {
-        case("Sunny"):
-          setWeatherType("Sunny")
-          setIcon(imageAssets[0].imageLink)
-          break
-        case("Rain"):
-          setWeatherType("Rain")
-          setIcon(imageAssets[1].imageLink)
-        break
-        case("Cloudy"):
-          setWeatherType("Cloudy")
-          setIcon(imageAssets[2].imageLink)
-        break
-        default:
-          setIcon(empty.imageLink) 
-      }
-      //console.log(route.params?.photo)
-      let p = route.params?.photo
-      let pp = route.params?.b64
-      if (p != undefined) {
-        setPhoto(`${p}`)
-        setPb64(`${pp}`)
-      }
-      
-      
+        let receivedType = route.params.weatherType
+        if (receivedType != undefined){
+            setWeatherType(receivedType)
+        }
+            switch (weatherType) {
+                case("Sunny"):
+                setIcon(imageAssets[0].imageLink)
+                break
+                case("Rain"):
+                setIcon(imageAssets[1].imageLink)
+                break
+                case("Cloudy"):
+                setIcon(imageAssets[2].imageLink)
+                break
+                default:
+                setIcon(empty.imageLink) 
+        }
+        
+        
     })
+    useEffect(() => {
+        let report_id= route.params.report
+        getWholeReport(report_id)
+    },[])
 
     let optionsList = [
       {
@@ -161,7 +163,7 @@ const CreateReport = ({route, _navigation}) => {
                     <Text>{weatherType}</Text>
                     <Pressable style={styles.button}
                         onPress={() => {
-                          navigation.push('WeatherPicker')
+                          navigation.navigate('WeatherPicker', {edit:true})
                         }}>
                           <Text style={styles.textStyle}>Pick a weather situation</Text>
                     </Pressable>
@@ -186,7 +188,7 @@ const CreateReport = ({route, _navigation}) => {
                           postReport()
                           
                         }}>
-                          <Text style={styles.textStyle}>Submit report</Text>
+                          <Text style={styles.textStyle}>Update report</Text>
                       </Pressable>
                     </>}
                     
@@ -207,7 +209,7 @@ const CreateReport = ({route, _navigation}) => {
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                   <ActivityIndicator size="large" color="#00a6ff" />
-                  <Text style={styles.modalText}>Sending report</Text>
+                  <Text style={styles.modalText}>Updating report</Text>
                 </View>
               </View>
             </Modal>
@@ -217,7 +219,7 @@ const CreateReport = ({route, _navigation}) => {
   
 }
 
-export default CreateReport
+export default EditReport
 
 const styles = StyleSheet.create({
   input: {
