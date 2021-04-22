@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useReducer, useContext } from 'react'
-import { Button, View, Text, TextInput, StyleSheet, Dimensions, ActivityIndicator, ScrollView, SafeAreaView } from 'react-native'
+import {  View, Image,  StyleSheet, Dimensions,  TouchableOpacity } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import Map from './Map.js'
@@ -16,6 +16,7 @@ import Register from './Register.js'
 import CameraView from './Camera.js'
 import ReportList from './screens/ReportList'
 import EditReport from './screens/EditReport.js'
+import { Icon } from 'react-native-elements'
 
 const AppStack = () => {
   const {signOut} = useContext(AuthContext);
@@ -32,11 +33,10 @@ const AppStack = () => {
         },
         headerTintColor: '#fff',
         headerRight: () => (
-          <Button
-            onPress={() => navigation.navigate('ReportList')}
-            title="My reports"
-            color="#000"
-          />
+          <TouchableOpacity style={{paddingHorizontal:15}}
+            onPress={() => navigation.navigate('ReportList')}>
+          <Icon name='article' color='#fff' />    
+          </TouchableOpacity>
         ),
       }}
       />
@@ -88,6 +88,7 @@ export default function App({ navigation }) {
               isLoading: false,
               isSignedUp: false,
               noAccount: true,
+              message: ""
             }
           case 'TO_SIGNIN_PAGE':
             return {
@@ -95,6 +96,7 @@ export default function App({ navigation }) {
               isLoading: false,
               isSignedIn: false,
               noAccount: false,
+              message: ""
             }
           case 'RESTORE_TOKEN':
             return {

@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react'
 import MapView, { Marker, getMapBoundaries } from 'react-native-maps'
 import {
   Alert, Modal, Pressable, Button, ActivityIndicator,
-  StyleSheet, Text, View, Dimensions
+  StyleSheet, Text, View, Dimensions, Image
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import * as Location from 'expo-location'
 import { fetchReports } from './API.js'
 import * as SecureStore from 'expo-secure-store'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import {icons} from './Data'
+import { createIconSet } from 'react-native-vector-icons'
+
 
 function Map() {
   const navigation = useNavigation()
@@ -16,15 +18,9 @@ function Map() {
   const [locError, setLocError] = useState(false)
   const [token, setToken] = useState(null)
   const [currentLocation, setCurrentLocation] = useState(null)
-  const [region, setRegion] = useState({
-    latitude: 48.733333,
-    longitude: 18.933333,
-    latitudeDelta: 40,
-    longitudeDelta: 40
-  })
-
   const [markers, setMarkers] = useState([])
   const [mref, setRef] = useState(null)
+
 
   const getPermission = async () => {
     try {
@@ -42,10 +38,10 @@ function Map() {
   const getPosition = async () => {
     try {
       let location = await Location.getCurrentPositionAsync({})
-      console.log(location)
+      //console.log(location)
       setCurrentLocation(location)
-      setRegion({
-        latitude: location.coords.latitude,
+      mref.animateToRegion({
+        latitude: location .coords.latitude,
         longitude: location.coords.longitude,
         latitudeDelta: 20,
         longitudeDelta: 20
@@ -58,24 +54,21 @@ function Map() {
     
   }
 
+  const getToken = async () => {
+    let userToken = ''
+    try {
+      userToken = await SecureStore.getItemAsync('userToken')
+      setToken(userToken) 
+    } catch (e) {
+      console.error(`Token restoration failed on Map: ${e}`)
+    }
+  }
+
   useEffect(() => {
 
-    const getToken = async () => {
-      let userToken = ''
-      try {
-        userToken = await SecureStore.getItemAsync('userToken')
-        setToken(userToken) 
-      } catch (e) {
-        console.error(`Token restoration failed on Map: ${e}`)
-      }
-    }
-
+   
     
-
-    getToken()
-    getPermission()
-    getPosition()
-  }, [])
+  })
 
   let handleResponse = (response) => {
     if(response.hasOwnProperty("response")){
@@ -97,7 +90,7 @@ function Map() {
           },
           title: arr[i].characteristic,
           description: arr[i].description,
-          clr: colors[Math.floor(Math.random() * colors.length)]
+          image: icons(arr[i].characteristic)
         })
       }
       //console.log(markers)
@@ -107,11 +100,13 @@ function Map() {
     }
     else {
       console.log(response.error)
+      setModalVisible(false)
     }
 
   }
 
   let onRegionChangeComplete = async () => {
+    
     let promis = await mref.getMapBoundaries()
     if (promis.northEast.latitude < 1) {
       return
@@ -135,15 +130,31 @@ function Map() {
         rotateEnabled={false}
         showsUserLocation={true}
         showsMyLocationButton={true}
-        userLocationPriority={'passive'}
-        region={region}
+        userLocationPriority={'balanced'}
+        loadingEnabled = {true}
+        followsUserLocation= {true}
+        loadingIndicatorColor="#666666"
+        loadingBackgroundColor="#eeeeee"
+        initialRegion={{
+          latitude: 0,
+          longitude: 0,
+          latitudeDelta: 120,
+          longitudeDelta: 120
+        }
+          
+        }
+        //region={region}
         ref={(ref) => {
           setRef(ref)
         }}
         onMapReady={() => {
+          getToken()
+          getPermission()
+          getPosition()
         }}
         onRegionChangeComplete={region => {
-          setRegion(region)
+          //setRegion(region)
+          
           onRegionChangeComplete()
         }}
       >
@@ -154,8 +165,9 @@ function Map() {
             identifier={marker.report_id}
             onPress={() => navigation.navigate("Details", { marker })}
             coordinate={marker.latlng}
-            pinColor={marker.clr}
-          />
+          >
+          <Image source={(marker.image)} style={{height: 35, width:35 }} />  
+          </Marker>
         ))}
       </MapView>
       <View style={styles.centeredView}>

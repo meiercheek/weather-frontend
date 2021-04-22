@@ -71,8 +71,11 @@ export const sendReport = (token, report) => {
 }
 
 export const fetchLocationName = (lat, long) => {
-    return fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${long}&format=json&zoom=14`, {  
+    return fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${long}&format=json&zoom=10`, {  
         method: 'GET',
+        headers:{
+            'Accept-Language': 'en-US,en;q=0.5'
+        }
     })
     .then((response) => response.json())
     .then((responseData) => {return responseData})

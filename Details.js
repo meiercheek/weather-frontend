@@ -1,11 +1,12 @@
 import * as React from 'react'
-import {  View, Text, StyleSheet, Image, Dimensions, ActivityIndicator, FlatList, ScrollView, SafeAreaView } from 'react-native'
+import {  View, Text, StyleSheet, ActivityIndicator, Image, FlatList, SafeAreaView } from 'react-native'
 import { useEffect, useState } from 'react'
 import MapView, { Marker } from 'react-native-maps'
 import {fetchWholeReport} from './API.js'
 import * as SecureStore from 'expo-secure-store'
 import moment from 'moment'
-
+import { Icon } from 'react-native-elements'
+import {icons} from './Data'
 
 const Details = ({route, navigation}) => {
     const [isLoading, setIsLoading] = useState(true)
@@ -49,11 +50,13 @@ const Details = ({route, navigation}) => {
           })
           setIsLoading(false)
           setReport(array)
+          //console.log(array)
           }
-          else if(responseData.hasOwnProperty("error")) {
-            setError(true)
-            setIsLoading(false)
-          }
+          
+        }
+        else if(responseData.hasOwnProperty("error")) {
+          setIsLoading(false)
+          setError(true)
         }
         }
         ).catch(e => console.error("details:" + e))
@@ -73,7 +76,10 @@ const Details = ({route, navigation}) => {
                         <ActivityIndicator size="large" color="#00a6ff" />
                 
                       </View>}
-        {error && <Text>server error occured, try again later</Text>}  
+        {error && <View style={{}}>
+          <Icon name='error' color='#313237' />
+          <Text style={{textAlign:'center'}}>Server error occured, try again later.</Text>
+          </View>}  
         {report &&  
         <>
             <MapView style={styles.map}
@@ -88,24 +94,28 @@ const Details = ({route, navigation}) => {
                   longitudeDelta: 0.0421,
                 }}>
                     <Marker
+                        //image={require("./assets/icons/sunny_smol.png")}
                         coordinate={{
                            latitude: parseFloat(marker.latitude),
-                          longitude: parseFloat(marker.longitude) }} 
-                    />
+                          longitude: parseFloat(marker.longitude) }}>
+                           
+                    </Marker>
               
             </MapView>
           <FlatList style={{margin:10}}
               data={report}
               renderItem={({ item }) => (
               <View style={{ flex: 1, flexDirection: 'column' }}>
+                { item.value != "-" && <>
                   <Text style={styles.title}>{item.title}</Text>
                   {item.title != "Photo" &&
                   <Text style={styles.value}>{item.value}</Text>}
-                  {item.title == "Photo" &&<>
+                  {item.title == "Photo" &&  item.value != "LQ=="  &&<>
       
-                    <Image style={styles.imageThumbnail} source={{uri: `data:image/jpg;base64,${item.value}`}}></Image>
+                    <Image style={styles.imageThumbnail} source={{uri: `data:image/jpg;base64,${item.value}`}} ></Image>
+                </>}
+                </>}
                   
-                  </>}
               </View>
               )}
               keyExtractor={(item, index) => index.toString()}
@@ -120,7 +130,7 @@ export default Details
 
 const styles = StyleSheet.create({
   map:{
-    flex: 1,
+    flex: 5,
   },
   container: {
     flex: 1,

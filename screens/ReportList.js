@@ -6,7 +6,7 @@ import { useState } from 'react'
 import * as SecureStore from 'expo-secure-store'
 import { useNavigation } from '@react-navigation/native'
 import moment from 'moment'
-
+import { Icon } from 'react-native-elements'
 
 const ReportList = ({route, _navigation}) => {
   const navigation = useNavigation()
@@ -84,7 +84,8 @@ const ReportList = ({route, _navigation}) => {
                       </View>
         }
         {isEmpty && <View >
-          <Text>You have not submitted any reports yet.</Text>     
+          <Icon name='warning' color='#313237' />
+          <Text style={{textAlign:'center'}}>You have not submitted any reports yet.</Text>     
         </View>}
 
         {list && !isEmpty &&

@@ -24,15 +24,19 @@ const CreateReport = ({route, _navigation}) => {
     let location = route.params.location.coords
 
     const getDisplayLocation = async () => {
-      try {
+      try {     
+        let response = await fetchLocationName(location.latitude, location.longitude)
+        if(response.hasOwnProperty("display_name")){
+          let divide = response.display_name.split(',')
+          let city = divide[0]
+          let country = divide[divide.length - 1]
         
+          setDisplayLoc(`${city},${country}`)
+        }
+        else{
+          setDisplayLoc(`No approximate location found.`)
+        }
         
-        let {display_name} = await fetchLocationName(location.latitude, location.longitude)
-        let divide = display_name.split(',')
-        let city = divide[0]
-        let country = divide[divide.length - 1]
-        
-        setDisplayLoc(`${city},${country}`)
       } catch (e) {
         console.error(`display loc failed: ${e}`)
       }
