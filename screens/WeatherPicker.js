@@ -3,7 +3,7 @@ import MapView, {Marker} from 'react-native-maps'
 import { Button, 
     StyleSheet, Text, View, Dimensions, Image, TouchableOpacity, FlatList, SafeAreaView } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import {imageAssets} from './Data.js'
+import {imageAssets} from '../assets/Data.js'
 
 
 const WeatherPicker = ({route, _navigation}) => {

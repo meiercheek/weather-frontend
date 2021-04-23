@@ -2,11 +2,12 @@ import * as React from 'react'
 import {  View, Text, StyleSheet, ActivityIndicator, Image, FlatList, SafeAreaView } from 'react-native'
 import { useEffect, useState } from 'react'
 import MapView, { Marker } from 'react-native-maps'
-import {fetchWholeReport} from './API.js'
+import {fetchWholeReport} from '../API.js'
 import * as SecureStore from 'expo-secure-store'
 import moment from 'moment'
 import { Icon } from 'react-native-elements'
-import {icons} from './Data'
+import {icons} from '../assets/Data'
+import {mapStyle} from '../assets/mapstyle.js'
 
 const Details = ({route, navigation}) => {
     const [isLoading, setIsLoading] = useState(true)
@@ -46,7 +47,8 @@ const Details = ({route, navigation}) => {
             ]
           setMarker({
             latitude: report.latitude,
-            longitude: report.longitude
+            longitude: report.longitude,
+            icon: icons(report.characteristic)
           })
           setIsLoading(false)
           setReport(array)
@@ -83,6 +85,7 @@ const Details = ({route, navigation}) => {
         {report &&  
         <>
             <MapView style={styles.map}
+            customMapStyle={mapStyle}
             zoomEnabled={false}
             showsPointsOfInterest={false}
             zoomTapEnabled={false}
@@ -94,11 +97,10 @@ const Details = ({route, navigation}) => {
                   longitudeDelta: 0.0421,
                 }}>
                     <Marker
-                        //image={require("./assets/icons/sunny_smol.png")}
                         coordinate={{
                            latitude: parseFloat(marker.latitude),
                           longitude: parseFloat(marker.longitude) }}>
-                           
+                     <Image source={marker.icon} style={{height: 35, width:35 }} />       
                     </Marker>
               
             </MapView>
@@ -130,7 +132,7 @@ export default Details
 
 const styles = StyleSheet.create({
   map:{
-    flex: 5,
+    flex: 4,
   },
   container: {
     flex: 1,

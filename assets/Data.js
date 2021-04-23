@@ -16,21 +16,21 @@ export const icons = (weatherType) => {
 
 export const imageAssets = [
     {
-        imageLink: require("./assets/icons/Sunny.png"),
+        imageLink: require("./icons/Sunny.png"),
         title: "Sunny"
     },
     {
-        imageLink: require("./assets/icons/Rain.png"),
+        imageLink: require("./icons/Rain.png"),
         title: "Rain"
     },
     {
-        imageLink: require("./assets/icons/Cloudy.png"),
+        imageLink: require("./icons/Cloudy.png"),
         title: "Cloudy"
     },
 
 ]
 
 export const empty = {
-    imageLink: require("./assets/icons/empty.png"),
+    imageLink: require("./icons/empty.png"),
     title: "Empty"
 }

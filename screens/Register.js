@@ -1,15 +1,16 @@
 
 import React from 'react'
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native'
-import {AuthContext} from './Auth.js'
+import {AuthContext} from '../Auth.js'
 
 
 
-const Login = ({navigation}) => {
-  const [username, setUsername] = React.useState('lubko')
-  const [password, setPassword] = React.useState('lubko')
+const Register = ({navigation}) => {
+  const [username, setUsername] = React.useState('')
+  const [password, setPassword] = React.useState('')
+  const [email, setEmail] = React.useState('')
 
-  const { signIn, signUp } = React.useContext(AuthContext)
+  const { signUp, signIn } = React.useContext(AuthContext)
 
   return (
     <View style={styles.container}>
@@ -18,6 +19,13 @@ const Login = ({navigation}) => {
         <Text style={styles.logo}>Report</Text>
         <Text style={styles.logo}>App</Text>
       </View>
+      <View style={styles.inputView} >
+        <TextInput style={styles.inputText}
+                  placeholder="E-mail"
+                  value={email}
+                  onChangeText={setEmail} />
+      </View>
+      
       <View style={styles.inputView} >
         <TextInput style={styles.inputText}
                   placeholder="Username"
@@ -31,24 +39,23 @@ const Login = ({navigation}) => {
                   onChangeText={setPassword}
                   secureTextEntry />
       </View>
-      <Text style={styles.forgot}>login message</Text>
+
+    <Text style={styles.forgot}>message</Text>
+
       <TouchableOpacity 
         onPress={() => {
-          signIn({ username, password })
-          //navigation.navigate('HomeScreen')
-          
-          }
-        }
+            signUp({ email, username, password })
+        } }
          style={styles.loginBtn}>
-          <Text style={styles.loginText}>LOGIN</Text>
+          <Text style={styles.loginText}>Sign Up</Text>
       </TouchableOpacity>
       <TouchableOpacity
       onPress={() => {
-          signUp()
+          signIn()
         
         }}
       >
-        <Text style={styles.forgot}>Signup</Text>
+        <Text style={styles.forgot}>Have an account? Login</Text>
         
       </TouchableOpacity>
 
@@ -57,7 +64,7 @@ const Login = ({navigation}) => {
   );
 }
 
-export default Login
+export default Register
 
 const styles = StyleSheet.create({
   container: {

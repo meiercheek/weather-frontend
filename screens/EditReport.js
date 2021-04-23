@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { SafeAreaView, TextInput, Modal, ActivityIndicator,
     StyleSheet, Text, View, Dimensions, FlatList, Alert, Image, Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import {imageAssets, empty} from '../Data.js'
+import {imageAssets, empty} from '../assets/Data.js'
 import * as SecureStore from 'expo-secure-store'
 import {updateReport, fetchWholeReport} from '../API.js'
 

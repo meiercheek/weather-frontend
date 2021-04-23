@@ -4,9 +4,9 @@ import { SafeAreaView, TextInput, Modal, ActivityIndicator,
     StyleSheet, Text, View, Dimensions, FlatList, Alert, Image, Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import * as Location from 'expo-location'
-import {imageAssets, empty} from './Data.js'
+import {imageAssets, empty} from '../assets/Data.js'
 import * as SecureStore from 'expo-secure-store'
-import {fetchLocationName, getThisUser, sendReport} from './API.js'
+import {fetchLocationName, getThisUser, sendReport} from '../API.js'
 
 const CreateReport = ({route, _navigation}) => {
     const navigation = useNavigation()
@@ -186,8 +186,15 @@ const CreateReport = ({route, _navigation}) => {
                    <>
                     <Pressable style={styles.button}
                         onPress={() => {
-                          setModalVisible(true)
-                          postReport()
+                          if(weatherType == null){
+                            Alert.alert("Weather situation is a required field.")
+                          }
+                          else{
+                            setModalVisible(true)
+                            postReport()
+                          }
+                          
+                          
                           
                         }}>
                           <Text style={styles.textStyle}>Submit report</Text>

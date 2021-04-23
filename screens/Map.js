@@ -6,11 +6,11 @@ import {
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import * as Location from 'expo-location'
-import { fetchReports } from './API.js'
+import { fetchReports } from '../API.js'
 import * as SecureStore from 'expo-secure-store'
-import {icons} from './Data'
+import {icons} from '../assets/Data'
 import { createIconSet } from 'react-native-vector-icons'
-
+import {mapStyle} from '../assets/mapstyle.js'
 
 function Map() {
   const navigation = useNavigation()
@@ -127,6 +127,7 @@ function Map() {
   return (
     <View style={styles.container}>
       <MapView style={styles.map}
+        customMapStyle={mapStyle}
         rotateEnabled={false}
         showsUserLocation={true}
         showsMyLocationButton={true}
