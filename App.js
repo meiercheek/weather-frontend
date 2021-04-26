@@ -18,6 +18,7 @@ import ReportList from './screens/ReportList'
 import EditReport from './screens/EditReport.js'
 import { Icon } from 'react-native-elements'
 
+
 const AppStack = () => {
   const {signOut} = useContext(AuthContext);
   const navigation = useNavigation()
@@ -33,11 +34,22 @@ const AppStack = () => {
         },
         headerTintColor: '#fff',
         headerRight: () => (
-          <TouchableOpacity style={{paddingHorizontal:15}}
-            onPress={() => navigation.navigate('ReportList')}>
-          <Icon name='article' color='#fff' />    
-          </TouchableOpacity>
+          
+          <View style={{flexDirection:"row"}}>
+            <TouchableOpacity style={{paddingHorizontal:15}}
+                      onPress={() => navigation.navigate('ReportList')}>
+                        <Icon name='article' color='#fff' />    
+            </TouchableOpacity>
+            <TouchableOpacity style={{paddingHorizontal:15}}
+                      onPress={() => signOut() }>
+                        <Icon name='logout' color='#fff' />    
+            </TouchableOpacity>
+          </View>
+
+
+          
         ),
+
       }}
       />
       <Stack.Screen name="Details" component={Details} />
@@ -157,16 +169,11 @@ export default function App({ navigation }) {
   const authContext = useMemo(
     () => ({
       signIn: async data => {
-        // In a production app, we need to send some data (usually username, password) to server and get a token
-        // We will also need to handle errors if sign in failed
-        // After getting token, we need to persist the token using `SecureStore`
-        // In the example, we'll use a dummy token
         if (data && data.username !== undefined && data.password !== undefined){
         const { username, password } = data
         let r = await fetchLogin(username, password)
-        //console.log(r)
+
         if (r.auth == true){
-            //console.log(r)
            dispatch({ type: 'SIGN_IN', token: r.token })
            saveToken("userToken", r.token)
         }
@@ -178,13 +185,8 @@ export default function App({ navigation }) {
           dispatch({type: 'TO_SIGNIN_PAGE'})
         }
       },
-      signOut: () => dispatch({ type: 'SIGN_OUT' }),
+      signOut: () => dispatch({ type: 'TO_SIGNIN_PAGE' }),
       signUp: async data => {
-        // In a production app, we need to send user data to server and get a token
-        // We will also need to handle errors if sign up failed
-        // After getting token, we need to persist the token using `SecureStore`
-        // In the example, we'll use a dummy token
-        //console.log(data)
         if (data && data.email !== undefined 
           && data.username !== undefined && data.password !== undefined){
           const { email, username, password } = data

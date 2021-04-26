@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import MapView, { Marker, getMapBoundaries } from 'react-native-maps'
 import {
   Alert, Modal, Pressable, Button, ActivityIndicator,
-  StyleSheet, Text, View, Dimensions, Image
+  StyleSheet, Text, View, Dimensions, Image, TouchableOpacity
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import * as Location from 'expo-location'
@@ -11,6 +11,8 @@ import * as SecureStore from 'expo-secure-store'
 import {icons} from '../assets/Data'
 import { createIconSet } from 'react-native-vector-icons'
 import {mapStyle} from '../assets/mapstyle.js'
+import { FAB } from 'react-native-elements'
+import { Icon } from 'react-native-elements'
 
 function Map() {
   const navigation = useNavigation()
@@ -41,7 +43,7 @@ function Map() {
       //console.log(location)
       setCurrentLocation(location)
       mref.animateToRegion({
-        latitude: location .coords.latitude,
+        latitude: location.coords.latitude,
         longitude: location.coords.longitude,
         latitudeDelta: 20,
         longitudeDelta: 20
@@ -63,12 +65,6 @@ function Map() {
       console.error(`Token restoration failed on Map: ${e}`)
     }
   }
-
-  useEffect(() => {
-
-   
-    
-  })
 
   let handleResponse = (response) => {
     if(response.hasOwnProperty("response")){
@@ -126,6 +122,7 @@ function Map() {
 
   return (
     <View style={styles.container}>
+      
       <MapView style={styles.map}
         customMapStyle={mapStyle}
         rotateEnabled={false}
@@ -172,6 +169,13 @@ function Map() {
         ))}
       </MapView>
       <View style={styles.centeredView}>
+      <View style={styles.modalView}>
+        
+      </View>
+        
+        </View>
+      
+      <View style={styles.centeredView}>
         <Modal
           animationType="slide"
           transparent={true}
@@ -185,7 +189,29 @@ function Map() {
           </View>
         </Modal>
       </View>
+
+      <TouchableOpacity
+          onPress={() => {
+            if(currentLocation != null || currentLocation != undefined) {
+              mref.animateToRegion({
+                latitude: currentLocation.coords.latitude,
+                longitude: currentLocation.coords.longitude,
+                latitudeDelta: 20,
+                longitudeDelta: 20
+              })
+            }
+            
+            else {
+              Alert.alert("No user location")
+            }
+            
+          }}
+          style={styles.floatingbutton}>
+            <Icon size={30} name="my-location"/> 
+          </TouchableOpacity>
       <View style={styles.buttonContainer}>
+        
+
         <Button style={styles.button} title="Submit a report"
             onPress={() => {
               if(currentLocation != null || currentLocation != undefined) {
@@ -206,6 +232,18 @@ function Map() {
 }
 export default Map
 const styles = StyleSheet.create({
+  floatingbutton:{
+    width: 60,  
+    height: 60,   
+    borderRadius: 30, 
+    borderColor: '#000',  
+    borderWidth: 3,         
+    backgroundColor: '#fff',                                    
+    position: 'absolute',                                          
+    bottom: 50,                                                    
+    right: 10, 
+    justifyContent:'center'
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',

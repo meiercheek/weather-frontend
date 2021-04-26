@@ -1,15 +1,45 @@
-
-import React from 'react'
+import React, {useState, useContext} from 'react'
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native'
-import {AuthContext} from '../Auth.js'
-
-
+import { AuthContext } from '../Auth.js'
+import { validateAll } from 'indicative/validator'
 
 const Login = ({navigation}) => {
-  const [username, setUsername] = React.useState('lubko')
-  const [password, setPassword] = React.useState('lubko')
+  const [username, setUsername] = useState('lubko')
+  const [password, setPassword] = useState('lubko')
+  const [SignUpErrors, setSignUpErrors] = useState(null)
 
-  const { signIn, signUp } = React.useContext(AuthContext)
+  const { signIn, signUp } = useContext(AuthContext)
+
+  const handleSignIn = () => {
+    const rules = {
+        username: 'required|alpha',
+        password: 'required|string|min:5|max:40'
+    }
+
+    const data = {
+        username: username,
+        password: password
+    }
+
+    const messages = {
+        required: field => `${field} is required`,
+        'username.alpha': 'Username contains unallowed characters',
+        'password.min': 'Password is too shorter than 6 characters.'
+    }
+
+    validateAll(data, rules, messages)
+        .then(() => {
+            console.log('successful sign in')
+            signIn({ username, password })
+        })
+        .catch(err => {
+            const formatError = {}
+            err.forEach(err => {
+                formatError[err.field] = err.message
+            })
+            setSignUpErrors(formatError)
+        })
+}
 
   return (
     <View style={styles.container}>
@@ -22,21 +52,24 @@ const Login = ({navigation}) => {
         <TextInput style={styles.inputText}
                   placeholder="Username"
                   value={username}
-                  onChangeText={setUsername} />
+                  onChangeText={setUsername}
+        />
       </View>
       <View style={styles.inputView} >
         <TextInput style={styles.inputText}
                   placeholder="Password"
                   value={password}
                   onChangeText={setPassword}
-                  secureTextEntry />
+                  secureTextEntry
+        />
       </View>
-      <Text style={styles.forgot}>login message</Text>
+
+    <Text style={styles.forgot}> {SignUpErrors ? SignUpErrors.username : null}</Text>
+    <Text style={styles.forgot}> {SignUpErrors ? SignUpErrors.password : null}</Text>
+
       <TouchableOpacity 
         onPress={() => {
-          signIn({ username, password })
-          //navigation.navigate('HomeScreen')
-          
+          handleSignIn()
           }
         }
          style={styles.loginBtn}>
@@ -45,7 +78,6 @@ const Login = ({navigation}) => {
       <TouchableOpacity
       onPress={() => {
           signUp()
-        
         }}
       >
         <Text style={styles.forgot}>Signup</Text>
@@ -54,7 +86,7 @@ const Login = ({navigation}) => {
 
 
     </View>
-  );
+  )
 }
 
 export default Login
@@ -105,4 +137,4 @@ const styles = StyleSheet.create({
   loginText: {
     color: "black"
   }
-});
+})

@@ -1,16 +1,57 @@
-
-import React from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native'
 import {AuthContext} from '../Auth.js'
-
+import { validateAll } from 'indicative/validator'
+import { Input } from 'react-native-elements'
 
 
 const Register = ({navigation}) => {
-  const [username, setUsername] = React.useState('')
-  const [password, setPassword] = React.useState('')
-  const [email, setEmail] = React.useState('')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('')
+  const [SignUpErrors, setSignUpErrors] = useState(null)
 
-  const { signUp, signIn } = React.useContext(AuthContext)
+  const { signUp, signIn } = useContext(AuthContext)
+
+  const handleSignUp = () => {
+    const rules = {
+        email: 'required|email',
+        username: 'required|alpha',
+        password: 'required|string|min:6|max:40'
+    }
+
+    const data = {
+        email: email,
+        username: username,
+        password: password,
+    }
+
+    const messages = {
+        required: field => `${field} is required`,
+        'username.alpha': 'Username contains unallowed characters',
+        'email.email': 'Please enter a valid email address',
+        'password.min':
+            'Password is too short. Must be greater than 6 characters',
+    }
+
+    validateAll(data, rules, messages)
+        .then(() => {
+            console.log('successful sign up')
+            signUp({ email, username, password })
+        })
+        .catch(err => {
+            console.log(err)
+              const formatError = {}
+            err.forEach(err => {
+                formatError[err.field] = err.message
+            })
+            setSignUpErrors(formatError)
+            
+            
+        })
+}
+
+useEffect(() => {}, [SignUpErrors])
 
   return (
     <View style={styles.container}>
@@ -23,15 +64,19 @@ const Register = ({navigation}) => {
         <TextInput style={styles.inputText}
                   placeholder="E-mail"
                   value={email}
-                  onChangeText={setEmail} />
+                  onChangeText={setEmail}
+        />
       </View>
       
+ 
       <View style={styles.inputView} >
         <TextInput style={styles.inputText}
                   placeholder="Username"
                   value={username}
                   onChangeText={setUsername} />
+                  
       </View>
+      
       <View style={styles.inputView} >
         <TextInput style={styles.inputText}
                   placeholder="Password"
@@ -40,11 +85,13 @@ const Register = ({navigation}) => {
                   secureTextEntry />
       </View>
 
-    <Text style={styles.forgot}>message</Text>
-
+    <Text style={styles.forgot}> {SignUpErrors ? SignUpErrors.email : null}</Text>  
+    <Text style={styles.forgot}> {SignUpErrors ? SignUpErrors.username : null}</Text>
+    <Text style={styles.forgot}> {SignUpErrors ? SignUpErrors.password : null}</Text>
+    
       <TouchableOpacity 
         onPress={() => {
-            signUp({ email, username, password })
+            handleSignUp()
         } }
          style={styles.loginBtn}>
           <Text style={styles.loginText}>Sign Up</Text>
@@ -61,7 +108,7 @@ const Register = ({navigation}) => {
 
 
     </View>
-  );
+  )
 }
 
 export default Register
@@ -112,4 +159,4 @@ const styles = StyleSheet.create({
   loginText: {
     color: "black"
   }
-});
+})
