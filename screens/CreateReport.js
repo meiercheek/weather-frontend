@@ -65,7 +65,7 @@ const CreateReport = ({route, _navigation}) => {
           photo: pb64
         }).then((sentReport )=>{
           setModalVisible(false)
-          console.log(sentReport)
+          //console.log(sentReport)
           if(sentReport.response == "success"){
             navigation.navigate('HomeScreen')
           }

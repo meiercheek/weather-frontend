@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useReducer, useContext } from 'react'
-import {  View, Image,  StyleSheet, Dimensions,  TouchableOpacity } from 'react-native'
+import React, { useState, useEffect, useMemo, useReducer, useContext, useLayoutEffect } from 'react'
+import {  SafeAreaView, View, Text,  StyleSheet, Dimensions,  TouchableOpacity, Modal, Pressable } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import Map from './screens/Map.js'
@@ -20,8 +20,6 @@ import { Icon } from 'react-native-elements'
 
 
 const AppStack = () => {
-  const {signOut} = useContext(AuthContext);
-  const navigation = useNavigation()
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -33,22 +31,6 @@ const AppStack = () => {
           backgroundColor: '#008bff',
         },
         headerTintColor: '#fff',
-        headerRight: () => (
-          
-          <View style={{flexDirection:"row"}}>
-            <TouchableOpacity style={{paddingHorizontal:15}}
-                      onPress={() => navigation.navigate('ReportList')}>
-                        <Icon name='article' color='#fff' />    
-            </TouchableOpacity>
-            <TouchableOpacity style={{paddingHorizontal:15}}
-                      onPress={() => signOut() }>
-                        <Icon name='logout' color='#fff' />    
-            </TouchableOpacity>
-          </View>
-
-
-          
-        ),
 
       }}
       />
@@ -66,19 +48,62 @@ const AppStack = () => {
 }
 
 const HomeScreen = ({route, navigation}) => {
-  useEffect(() => {
-    if (route.params?.post) {
-      // Post updated, do something with `route.params.post`
-      // For example, send the post to the server
-    }
-  }, [route.params?.post])
+  const [modalVisible, setModalVisible] = useState(false)
+  const {signOut} = useContext(AuthContext)
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <View style={{flexDirection:"row"}}>
+            <TouchableOpacity style={{paddingHorizontal:15}}
+                      onPress={() => navigation.navigate('ReportList')}>
+                        <Icon name='article' color='#fff' />  
+            </TouchableOpacity>
+            <TouchableOpacity style={{paddingHorizontal:15}}
+                      onPress={() => setModalVisible(true) }>
+                        <Icon name='logout' color='#fff' /> 
+            </TouchableOpacity>
+          </View>
+        
+      ),
+    })
+  }, [navigation, setModalVisible]);
 
   return (
     
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Map/>
       
-    </View>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Text style={styles.modalText}>Are you sure you want to log out?</Text>
+                  <Pressable
+                      style={[styles.modalbutton, styles.buttonDelete]}
+                      onPress={() => {
+                        signOut()
+                        setModalVisible(!modalVisible)
+                      }}
+                  >
+                      <Text style={styles.textStyle}>Yes, log me out</Text>
+                  </Pressable>
+                  <Pressable
+                      style={[styles.modalbutton, styles.buttonEdit]}
+                      onPress={() => {
+                        setModalVisible(!modalVisible)
+                      }}
+                  >
+                      <Text style={styles.textStyle}>Cancel</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </Modal>
+            
+      
+    </SafeAreaView>
   )
 }
 
@@ -290,6 +315,69 @@ export default function App({ navigation }) {
 
 
 const styles = StyleSheet.create({
+  titleText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  paragraph: {
+    marginVertical: 8,
+    lineHeight: 20,
+  },
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalView: {
+    width: Dimensions.get('window').width - 85,
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 25,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontWeight:'bold'
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    width: '30%',
+    marginTop:5
+  },
+  modalbutton: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    margin:5
+  },
+  buttonEdit: {
+    backgroundColor: "#45a6f3",
+  },
+  buttonDelete: {
+    backgroundColor: "#ff4c4c",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
   detailscontainer: {
     flex: 1,
     backgroundColor: '#fff',
@@ -313,9 +401,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
+
   },
   mapDetailsContainer: {
     flex: 1,

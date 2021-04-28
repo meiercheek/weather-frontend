@@ -71,7 +71,7 @@ const EditReport = ({route, _navigation}) => {
           photo: pb64
         }).then((sentReport )=>{
           setModalVisible(false)
-          console.log(sentReport)
+          //console.log(sentReport)
           if(sentReport.response == "success"){
             navigation.navigate('ReportList', {refresh:true})
           }

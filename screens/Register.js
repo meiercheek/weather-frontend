@@ -2,7 +2,6 @@ import React, {useState, useContext, useEffect} from 'react'
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native'
 import {AuthContext} from '../Auth.js'
 import { validateAll } from 'indicative/validator'
-import { Input } from 'react-native-elements'
 
 
 const Register = ({navigation}) => {
@@ -36,11 +35,11 @@ const Register = ({navigation}) => {
 
     validateAll(data, rules, messages)
         .then(() => {
-            console.log('successful sign up')
+            //console.log('successful sign up')
             signUp({ email, username, password })
         })
         .catch(err => {
-            console.log(err)
+            //console.log(err)
               const formatError = {}
             err.forEach(err => {
                 formatError[err.field] = err.message

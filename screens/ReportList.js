@@ -49,7 +49,7 @@ const ReportList = ({route, _navigation}) => {
   const removeReport = async (id) => {
     let token = await SecureStore.getItemAsync('userToken')
     deleteReport(token, id).then((responseData) => {
-      console.log(responseData)
+      //console.log(responseData)
       if(responseData.hasOwnProperty("response")){
         if (responseData.response == "deleted"){
           Alert.alert("Report deleted")
@@ -201,7 +201,8 @@ export const styles = StyleSheet.create({
     },
     modalText: {
       marginBottom: 15,
-      textAlign: "center"
+      textAlign: "center",
+      fontWeight: 'bold'
     },
     button: {
       borderRadius: 20,

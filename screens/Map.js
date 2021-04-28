@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from 'react'
-import MapView, { Marker, getMapBoundaries } from 'react-native-maps'
+import React, { useState } from 'react'
+import MapView, { Marker } from 'react-native-maps'
 import {
-  Alert, Modal, Pressable, Button, ActivityIndicator,
-  StyleSheet, Text, View, Dimensions, Image, TouchableOpacity
+  Alert, Modal, Button, ActivityIndicator,
+  StyleSheet, Text, View, Dimensions, Image, TouchableOpacity, Pressable
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import * as Location from 'expo-location'
 import { fetchReports } from '../API.js'
 import * as SecureStore from 'expo-secure-store'
 import {icons} from '../assets/Data'
-import { createIconSet } from 'react-native-vector-icons'
 import {mapStyle} from '../assets/mapstyle.js'
-import { FAB } from 'react-native-elements'
 import { Icon } from 'react-native-elements'
 
 function Map() {
@@ -22,6 +20,7 @@ function Map() {
   const [currentLocation, setCurrentLocation] = useState(null)
   const [markers, setMarkers] = useState([])
   const [mref, setRef] = useState(null)
+  const[locModalVisible, setLocModalVisible] = useState(false)
 
 
   const getPermission = async () => {
@@ -95,7 +94,7 @@ function Map() {
       }
     }
     else {
-      console.log(response.error)
+      //console.log(response.error)
       setModalVisible(false)
     }
 
@@ -202,13 +201,46 @@ function Map() {
             }
             
             else {
-              Alert.alert("No user location")
+              setLocModalVisible(!locModalVisible)
             }
             
           }}
           style={styles.floatingbutton}>
             <Icon size={30} name="my-location"/> 
           </TouchableOpacity>
+
+          <View style={styles.centeredView}>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={locModalVisible}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Text style={styles.modalText}>Location is turned off. </Text>
+                  <Pressable
+                      style={[styles.modalbutton, styles.buttonEdit]}
+                      onPress={() => {
+                        setLocModalVisible(!locModalVisible)
+                        getPermission()
+                        getPosition()
+                      }}
+                  >
+                      <Text style={styles.textStyle}>Ask again</Text>
+                  </Pressable>
+                  <Pressable
+                      style={[styles.modalbutton, styles.buttonEdit]}
+                      onPress={() => {
+                        setLocModalVisible(!locModalVisible)
+                      }}
+                  >
+                      <Text style={styles.textStyle}>Cancel</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </Modal>
+          </View>  
+
       <View style={styles.buttonContainer}>
         
 
@@ -221,7 +253,7 @@ function Map() {
               }
               
               else {
-                Alert.alert("No user location")
+                setLocModalVisible(!locModalVisible)
               }}
             }
         />
@@ -291,6 +323,22 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5
   },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontWeight: 'bold'
+  },modalbutton: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    margin:5
+  },
+  buttonEdit: {
+    backgroundColor: "#45a6f3",
+  },
+  buttonDelete: {
+    backgroundColor: "#ff4c4c",
+  },
   button: {
     borderRadius: 20,
     padding: 10,
@@ -305,10 +353,6 @@ const styles = StyleSheet.create({
   textStyle: {
     color: "white",
     fontWeight: "bold",
-    textAlign: "center"
-  },
-  modalText: {
-    marginBottom: 15,
     textAlign: "center"
   },
 
