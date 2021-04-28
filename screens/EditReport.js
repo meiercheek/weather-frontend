@@ -87,7 +87,7 @@ const EditReport = ({route, _navigation}) => {
     }
     useEffect(() => {
 
-      let p = route.params?.photo
+      //let p = route.params?.photo
       let pp = route.params?.b64
       
       if (pp != undefined) {

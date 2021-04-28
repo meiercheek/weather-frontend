@@ -102,10 +102,10 @@ const CreateReport = ({route, _navigation}) => {
           setIcon(empty.imageLink) 
       }
       //console.log(route.params?.photo)
-      let p = route.params?.photo
+      //let p = route.params?.photo
       let pp = route.params?.b64
-      if (p != undefined) {
-        setPhoto(`${p}`)
+      if (pp != undefined) {
+        setPhoto(`data:image/jpg;base64,${pp}`)
         setPb64(`${pp}`)
       }
       

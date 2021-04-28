@@ -37,10 +37,10 @@ const CameraView = ({ route, _navigation }) => {
         )
         setModalVisible(false)
         if (edit) {
-          navigation.navigate('EditReport', {photo: photo.uri, b64: base64})
+          navigation.navigate('EditReport', {b64: base64})
         }
         else {
-          navigation.navigate('CreateReport', {photo: photo.uri, b64: base64})
+          navigation.navigate('CreateReport', {b64: base64})
         }
         
     }
