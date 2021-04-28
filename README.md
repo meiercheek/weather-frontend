@@ -1,11 +1,21 @@
+<img src="https://user-images.githubusercontent.com/45042522/116437412-b8b8d080-a84d-11eb-81b6-1c09274bae56.jpg" width="13%"></img> <img src="https://user-images.githubusercontent.com/45042522/116437433-bce4ee00-a84d-11eb-8295-5b90d5c51115.jpg" width="13%"></img> <img src="https://user-images.githubusercontent.com/45042522/116437445-beaeb180-a84d-11eb-9323-f4a5aa97010a.jpg" width="13%"></img> <img src="https://user-images.githubusercontent.com/45042522/116437450-c0787500-a84d-11eb-8f73-374e8aeccd73.jpg" width="13%"></img> <img src="https://user-images.githubusercontent.com/45042522/116437474-c4a49280-a84d-11eb-8994-320b75248a4d.jpg" width="13%"></img> <img src="https://user-images.githubusercontent.com/45042522/116437482-c706ec80-a84d-11eb-8334-1a761d7a38be.jpg" width="13%"></img> <img src="https://user-images.githubusercontent.com/45042522/116437489-c8381980-a84d-11eb-96ab-ab15eba8c4f3.jpg" width="13%"></img> 
 # Weather Report App
 
-Application is built in React Native v0.63.4.
+Application is built in React Native v0.63.4
 
-Tested on Android 9 && 11.
+Tested on Android 9 and 11.
 
 Requires backend to be running.
 Can be found in /backend folder.
+
+requires Expo: https://docs.expo.io/
+
+
+install the dependecies: `npm install`
+
+to start the app: `expo start`
+
+running on a physical device is recommended, emulators do not support the Expo Camera
 
 Core funcionalities:
  - can perform CRUD operations (submit report, display report, edit report and delete report)
