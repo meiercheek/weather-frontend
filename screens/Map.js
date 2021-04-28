@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import MapView, { Marker } from 'react-native-maps'
 import {
   Alert, Modal, Button, ActivityIndicator,
@@ -20,7 +20,20 @@ function Map() {
   const [currentLocation, setCurrentLocation] = useState(null)
   const [markers, setMarkers] = useState([])
   const [mref, setRef] = useState(null)
-  const[locModalVisible, setLocModalVisible] = useState(false)
+  const [locModalVisible, setLocModalVisible] = useState(false)
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      if(mref != null){
+        //console.log("yes")
+        onRegionChangeComplete()
+      }
+      
+    })
+
+
+    return unsubscribe
+  }, [navigation])
 
 
   const getPermission = async () => {
@@ -101,7 +114,7 @@ function Map() {
   }
 
   let onRegionChangeComplete = async () => {
-    
+    //console.log("volam sa")
     let promis = await mref.getMapBoundaries()
     if (promis.northEast.latitude < 1) {
       return

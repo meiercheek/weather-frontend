@@ -52,8 +52,6 @@ const Details = ({route, navigation}) => {
           })
           setIsLoading(false)
           setReport(array)
-          console.log(report.photo.slice(0,30))
-          //console.log(array)
           }
           
         }

@@ -29,7 +29,7 @@ const Login = ({navigation}) => {
 
     validateAll(data, rules, messages)
         .then(() => {
-            console.log('successful sign in')
+            //console.log('successful sign in')
             signIn({ username, password })
         })
         .catch(err => {

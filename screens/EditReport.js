@@ -91,7 +91,7 @@ const EditReport = ({route, _navigation}) => {
       let pp = route.params?.b64
       
       if (pp != undefined) {
-        console.log(pp.slice(0,30))
+        //console.log(pp.slice(0,30))
         setPhoto(`data:image/jpg;base64,${pp}`)
         setPb64(`${pp}`)
       }
