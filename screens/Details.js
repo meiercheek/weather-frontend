@@ -52,6 +52,7 @@ const Details = ({route, navigation}) => {
           })
           setIsLoading(false)
           setReport(array)
+          console.log(report.photo.slice(0,30))
           //console.log(array)
           }
           
@@ -108,12 +109,13 @@ const Details = ({route, navigation}) => {
               data={report}
               renderItem={({ item }) => (
               <View style={{ flex: 1, flexDirection: 'column' }}>
+                
                 { item.value != "-" && <>
                   <Text style={styles.title}>{item.title}</Text>
                   {item.title != "Photo" &&
                   <Text style={styles.value}>{item.value}</Text>}
                   {item.title == "Photo" &&  item.value != "LQ=="  &&<>
-      
+                    
                     <Image style={styles.imageThumbnail} source={{uri: `data:image/jpg;base64,${item.value}`}} ></Image>
                 </>}
                 </>}

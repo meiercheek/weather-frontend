@@ -20,7 +20,7 @@ const EditReport = ({route, _navigation}) => {
     const [pb64, setPb64] = useState('-')
     const [userId, setUserId] = useState('-')
     const [reportId, setReportId] = useState('-')
-
+    let receivedType = undefined
     const getWholeReport = async(id) =>{
         SecureStore.getItemAsync('userToken').then((token) =>{
             fetchWholeReport(token, id)
@@ -38,6 +38,7 @@ const EditReport = ({route, _navigation}) => {
                 onChangeText(report.description)
                 setDisplayLoc(report.location)
                 setIsLoading(false)
+                setPhoto("data:image/jpg;base64,"+report.photo)
               }
             }
             else if(responseData.hasOwnProperty("error")) {
@@ -85,6 +86,15 @@ const EditReport = ({route, _navigation}) => {
 
     }
     useEffect(() => {
+
+      let p = route.params?.photo
+      let pp = route.params?.b64
+      
+      if (pp != undefined) {
+        console.log(pp.slice(0,30))
+        setPhoto(`data:image/jpg;base64,${pp}`)
+        setPb64(`${pp}`)
+      }
         let receivedType = route.params.weatherType
         if (receivedType != undefined){
             setWeatherType(receivedType)
@@ -174,7 +184,7 @@ const EditReport = ({route, _navigation}) => {
                     <Pressable
                       style={styles.button}
                       onPress={() => {
-                        navigation.navigate('Camera')
+                        navigation.navigate('Camera', {edit:true})
                       }}>
                       <Text style={styles.textStyle}>Take a photo</Text>
                     </Pressable>

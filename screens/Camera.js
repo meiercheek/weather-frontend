@@ -8,12 +8,21 @@ import * as ImageManipulator from 'expo-image-manipulator';
 
 
 
-const CameraView = () => {
+const CameraView = ({ route, _navigation }) => {
   const [hasPermission, setHasPermission] = useState(null)
   const [modalVisible, setModalVisible] = useState(false)
   const [type, setType] = useState(Camera.Constants.Type.back)
   const [ref, setRef] = useState(null)
   const navigation = useNavigation()
+  const [edit, setEdit] = useState(false)
+
+  useEffect(() => {
+    if (route.params != undefined) {
+      if (route.params.hasOwnProperty("edit")) {
+        setEdit(true)
+      }
+    }
+  }, [])
 
   const snap = async () => {
     if (ref) {
@@ -26,9 +35,14 @@ const CameraView = () => {
         const {base64} = await ImageManipulator.manipulateAsync(
           photo.uri, [{resize: {width: 700}}], {base64:true}
         )
-
         setModalVisible(false)
-        navigation.navigate('CreateReport', {photo: photo.uri, b64: base64})
+        if (edit) {
+          navigation.navigate('EditReport', {photo: photo.uri, b64: base64})
+        }
+        else {
+          navigation.navigate('CreateReport', {photo: photo.uri, b64: base64})
+        }
+        
     }
     
   }
