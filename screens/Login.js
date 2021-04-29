@@ -4,8 +4,8 @@ import { AuthContext } from '../Auth.js'
 import { validateAll } from 'indicative/validator'
 
 const Login = ({navigation}) => {
-  const [username, setUsername] = useState('lubko')
-  const [password, setPassword] = useState('lubko')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [SignUpErrors, setSignUpErrors] = useState(null)
 
   const { signIn, signUp } = useContext(AuthContext)

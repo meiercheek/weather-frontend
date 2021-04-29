@@ -52,6 +52,7 @@ const Details = ({route, navigation}) => {
           })
           setIsLoading(false)
           setReport(array)
+          console.log(array)
           }
           
         }
@@ -108,9 +109,9 @@ const Details = ({route, navigation}) => {
               renderItem={({ item }) => (
               <View style={{ flex: 1, flexDirection: 'column' }}>
                 
-                { item.value != "-" && <>
+                { item.value != "-" && item.value != null && <>
                   <Text style={styles.title}>{item.title}</Text>
-                  {item.title != "Photo" &&
+                  {item.title != "Photo" && item.value != null &&
                   <Text style={styles.value}>{item.value}</Text>}
                   {item.title == "Photo" &&  item.value != "LQ=="  &&<>
                     
