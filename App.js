@@ -175,7 +175,6 @@ export default function App({ navigation }) {
   )
 
   useEffect(() => {
-    // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
       let userToken
 
