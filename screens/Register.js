@@ -16,7 +16,7 @@ const Register = ({navigation}) => {
     const rules = {
         email: 'required|email',
         username: 'required|alpha',
-        password: 'required|string|min:6|max:40'
+        password: 'required|string|min:5|max:40'
     }
 
     const data = {
@@ -30,7 +30,7 @@ const Register = ({navigation}) => {
         'username.alpha': 'Username contains unallowed characters',
         'email.email': 'Please enter a valid email address',
         'password.min':
-            'Password is too short. Must be greater than 6 characters',
+            'Password is too short. Must be longer than 5 characters',
     }
 
     validateAll(data, rules, messages)

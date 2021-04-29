@@ -17,6 +17,11 @@ to start the app: `expo start`
 
 running on a physical device is recommended, emulators do not support the Expo Camera
 
+you can register or use these accounts:
+
+username: `lubko` password: `lubko`
+username: `demo` password: `demodemo`
+
 Core funcionalities:
  - can perform CRUD operations (submit report, display report, edit report and delete report)
  - can operate with binary files(taking a picture and uploading it, also displaying as a preview)

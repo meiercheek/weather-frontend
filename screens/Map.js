@@ -196,7 +196,7 @@ function Map() {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <ActivityIndicator size="large" color="#00a6ff" />
-              <Text style={styles.modalText}>Loading</Text>
+              <Text style={styles.loadingModalText}>Loading</Text>
             </View>
           </View>
         </Modal>
@@ -340,7 +340,12 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
     fontWeight: 'bold'
-  },modalbutton: {
+  },
+  loadingModalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  modalbutton: {
     borderRadius: 20,
     padding: 10,
     elevation: 2,

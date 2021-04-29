@@ -24,7 +24,7 @@ const Login = ({navigation}) => {
     const messages = {
         required: field => `${field} is required`,
         'username.alpha': 'Username contains unallowed characters',
-        'password.min': 'Password is too shorter than 6 characters.'
+        'password.min': 'Password is shorter than 5 characters.'
     }
 
     validateAll(data, rules, messages)
