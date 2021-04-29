@@ -20,7 +20,7 @@ export const imageAssets = [
         title: "Sunny"
     },
     {
-        imageLink: require("./icons/Rain.png"),
+        imageLink: require("./icons/rain.png"),
         title: "Rain"
     },
     {

@@ -52,7 +52,7 @@ const Details = ({route, navigation}) => {
           })
           setIsLoading(false)
           setReport(array)
-          console.log(array)
+          //console.log(array)
           }
           
         }
