@@ -7,6 +7,7 @@ Tested on Android 9 and 11.
 
 Requires backend to be running.
 Can be found in /backend folder.
+DB runs on postgresql, the schemas are included, with some dummy data.
 
 requires Expo: https://docs.expo.io/
 
@@ -20,6 +21,7 @@ running on a physical device is recommended, emulators do not support the Expo C
 you can register or use these accounts:
 
 username: `lubko` password: `lubko`
+
 username: `demo` password: `demodemo`
 
 Core funcionalities:
