@@ -1,7 +1,10 @@
-<img src="https://user-images.githubusercontent.com/45042522/116437412-b8b8d080-a84d-11eb-81b6-1c09274bae56.jpg" width="13%"></img> <img src="https://user-images.githubusercontent.com/45042522/116437433-bce4ee00-a84d-11eb-8295-5b90d5c51115.jpg" width="13%"></img> <img src="https://user-images.githubusercontent.com/45042522/116437445-beaeb180-a84d-11eb-9323-f4a5aa97010a.jpg" width="13%"></img> <img src="https://user-images.githubusercontent.com/45042522/116437450-c0787500-a84d-11eb-8f73-374e8aeccd73.jpg" width="13%"></img> <img src="https://user-images.githubusercontent.com/45042522/116437474-c4a49280-a84d-11eb-8994-320b75248a4d.jpg" width="13%"></img> <img src="https://user-images.githubusercontent.com/45042522/116437482-c706ec80-a84d-11eb-8334-1a761d7a38be.jpg" width="13%"></img> <img src="https://user-images.githubusercontent.com/45042522/116437489-c8381980-a84d-11eb-96ab-ab15eba8c4f3.jpg" width="13%"></img> 
+<img src="https://user-images.githubusercontent.com/45042522/116437412-b8b8d080-a84d-11eb-81b6-1c09274bae56.jpg" width="13%"></img> <img src="https://user-images.githubusercontent.com/45042522/116437433-bce4ee00-a84d-11eb-8295-5b90d5c51115.jpg" width="13%"></img> <img src="https://user-images.githubusercontent.com/45042522/116437445-beaeb180-a84d-11eb-9323-f4a5aa97010a.jpg" width="13%"></img> <img src="https://user-images.githubusercontent.com/45042522/116437450-c0787500-a84d-11eb-8f73-374e8aeccd73.jpg" width="13%"></img> <img src="https://user-images.githubusercontent.com/45042522/116437474-c4a49280-a84d-11eb-8994-320b75248a4d.jpg" width="13%"></img> 
+<img src="https://user-images.githubusercontent.com/45042522/160401548-5a092c35-9c52-47e3-9b22-0726fa1f7c97.png" width="13%"></img> 
+<img src="https://user-images.githubusercontent.com/45042522/160401630-325180aa-8c02-48f7-b0fd-87e4d21f8e19.png" width="13%"></img> 
 # Weather Report App
 
 Application is built in React Native v0.63.4
+
 
 Tested on Android 9 and 11.
 
@@ -47,5 +50,6 @@ How to use:
  12. The reports can be deleted with the delete button on the My reports screen, the app sends a DELETE request to the backend and updates the list with the fresh list of current user's reports 
  13. The app automatically updates the map on deletion or submission of new report.
  14. You can logout from the main screen with the button with the arrow and the doors.
+
 
 
